@@ -30,6 +30,8 @@ public class PlayerManager : MonoBehaviour {
 
 	public Camera PlayerCamera;
 
+	public bool isObjSelected = false;
+
 	private float doubleClickTime = .4f;
 	private float lastClickTime = -10f;
 
@@ -241,6 +243,8 @@ public class PlayerManager : MonoBehaviour {
 
         SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);*/
 
+		isObjSelected = true;
+
         StartCoroutine(LoadObject(objectName));
 	}
 
@@ -315,6 +319,7 @@ public class PlayerManager : MonoBehaviour {
 
 	public void SetSelectableToNull ()
 	{
+		isObjSelected = false;
 		if (currentObject)
 		{
 			IUISelectable selectable = currentObject.GetComponent<IUISelectable> ();

@@ -62,6 +62,10 @@ public class CameraPositions : MonoBehaviour
 	{
 		// Lines 56 - 124 = First Person View code
 
+		if (PlayerManager.Instance.isObjSelected == true) {
+			isRotating = false;
+		}
+
 		if (Input.GetKeyDown ("space")) {
 			
 			if (isFP == false) {
