@@ -52,10 +52,12 @@ public class PlayerManager : MonoBehaviour {
 			List<RaycastResult> raycastResults1 = new List<RaycastResult> ();
 			EventSystem.current.RaycastAll (pointer1, raycastResults1);
 
+            Debug.Log("Mouse Down");
 			if (raycastResults1.Count > 0)
 			{
 				foreach (RaycastResult result in raycastResults1)
 				{
+                    Debug.Log("Hit " + result.gameObject.name);
 					if(result.gameObject == null)
 					{
 						break;
@@ -85,6 +87,7 @@ public class PlayerManager : MonoBehaviour {
 			}
 			else
 			{
+                Debug.Log("Hit nothing");
 				hasHitUI = false;
 
 				if (currentObject)
@@ -122,41 +125,43 @@ public class PlayerManager : MonoBehaviour {
 
 			float timeDelta = Time.time - lastClickTime;
 
-			if(timeDelta < doubleClickTime)
-			{
+			//if(timeDelta < doubleClickTime)
+			//{
 				PointerEventData pointer = new PointerEventData(EventSystem.current);
 				pointer.position = Input.mousePosition;
 				List<RaycastResult> raycastResults = new List<RaycastResult>();
 				EventSystem.current.RaycastAll (pointer, raycastResults);
 
-				if (raycastResults.Count > 0)
-				{
-					if (raycastResults [0].gameObject.layer == LayerMask.NameToLayer ("MoveableUI"))
-					{
-						IUISelectable selectable = raycastResults [0].gameObject.GetComponent<IUISelectable> ();
+                //Debug.Log("Double click");
+				//if (raycastResults.Count > 0)
+				//{
+				//	if (raycastResults [0].gameObject.layer == LayerMask.NameToLayer ("MoveableUI"))
+				//	{
+				//		IUISelectable selectable = raycastResults [0].gameObject.GetComponent<IUISelectable> ();
 
-						if (selectable == null)
-						{
-							selectable = raycastResults [0].gameObject.transform.parent.GetComponent<IUISelectable> ();
-							currentObject = raycastResults [0].gameObject.transform.parent;
-						}
-						else
-						{
-							currentObject = raycastResults [0].gameObject.transform;
-						}
+				//		if (selectable == null)
+				//		{
+				//			selectable = raycastResults [0].gameObject.transform.parent.GetComponent<IUISelectable> ();
+				//			currentObject = raycastResults [0].gameObject.transform.parent;
+				//		}
+				//		else
+				//		{
+				//			currentObject = raycastResults [0].gameObject.transform;
+				//		}
 							
-						selectable.Select(true);
-						MoveableUISelected = true;
-					}
-				}
-				else
+				//		selectable.Select(true);
+				//		MoveableUISelected = true;
+				//	}
+				//}
+				//else
 				{
+                    Debug.Log("Single click");
 					RaycastHit hitInfo;
 
 					if (Physics.Raycast (Camera.main.ScreenPointToRay (Input.mousePosition), out hitInfo, Mathf.Infinity, 1 << LayerMask.NameToLayer ("DesignObject")))
 					{
 						currentObject = hitInfo.transform;
-						SelectedObjectCircleRenderer.Instance.SetSelectedObject (currentObject);
+                        SelectedObjectCircleRenderer.Instance.SetSelectedObject (currentObject);
 					}
 				}
 
@@ -167,7 +172,7 @@ public class PlayerManager : MonoBehaviour {
 			{
 				lastClickTime = Time.time;
 			}
-		}
+		//}
 
 		if (lastClickTime > 0f && Time.time - lastClickTime > doubleClickTime)
 		{
@@ -178,10 +183,26 @@ public class PlayerManager : MonoBehaviour {
 			
 		if (Input.GetMouseButton(0) && !hasHitUI)
 		{
+            //Debug.Log("Hit object");
 			if (MoveableUISelected && currentObject)
 			{
-				currentObject.position = Input.mousePosition;
-			}
+                Debug.Log("move");
+                //currentObject.position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                //RaycastHit hit;
+                //if (Physics.Raycast(ray, out hit, Mathf.Infinity)) {
+                //    currentObject.position = hit.point;
+                //}
+
+                isObjSelected = true;
+
+                RaycastHit hitInfo3;
+                Ray ray = PlayerCamera.ScreenPointToRay(Input.mousePosition);
+
+                if (Physics.Raycast(ray, out hitInfo3, Mathf.Infinity, 1 << LayerMask.NameToLayer("GridCollider"))) {
+                    currentObject.position = new Vector3(Mathf.Round(Mathf.Clamp(hitInfo3.point.x, -(GridManager.Instance.gridSizeX / 2f), (GridManager.Instance.gridSizeX / 2f) - 1f)) + .5f, 0f, Mathf.Round(Mathf.Clamp(hitInfo3.point.z, -(GridManager.Instance.gridSizeZ / 2f), (GridManager.Instance.gridSizeZ / 2f) - 1f)) + .5f);
+                }
+            }
 			else if (!EventSystem.current.IsPointerOverGameObject ())
 			{
 				if (HitRotateCirlce)
@@ -194,8 +215,10 @@ public class PlayerManager : MonoBehaviour {
 						RotateCircleHitPreviousPoint = hitInfo5.point;
 					}
 				}
+                // need to select the object that we are hovering over first
 				else if (currentObject)
 				{
+                    Debug.Log("Current");
 					RaycastHit hitInfo3;
 					Ray ray = PlayerCamera.ScreenPointToRay (Input.mousePosition);
 
