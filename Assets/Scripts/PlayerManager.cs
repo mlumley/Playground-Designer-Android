@@ -199,7 +199,7 @@ public class PlayerManager : MonoBehaviour {
                 RaycastHit hitInfo3;
                 Ray ray = PlayerCamera.ScreenPointToRay(Input.mousePosition);
 
-                if (Physics.Raycast(ray, out hitInfo3, Mathf.Infinity, 1 << LayerMask.NameToLayer("GridCollider"))) {
+                if (Physics.Raycast(ray, out hitInfo3, Mathf.Infinity, 1 << LayerMask.NameToLayer("DesignObject"))) {
                     currentObject.position = new Vector3(Mathf.Round(Mathf.Clamp(hitInfo3.point.x, -(GridManager.Instance.gridSizeX / 2f), (GridManager.Instance.gridSizeX / 2f) - 1f)) + .5f, 0f, Mathf.Round(Mathf.Clamp(hitInfo3.point.z, -(GridManager.Instance.gridSizeZ / 2f), (GridManager.Instance.gridSizeZ / 2f) - 1f)) + .5f);
                 }
             }
