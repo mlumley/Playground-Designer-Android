@@ -62,6 +62,7 @@ public class CameraPositions : MonoBehaviour
 	{
 		// Lines 56 - 124 = First Person View code
 
+
 		if (Input.GetKeyDown ("space")) {
 			
 			if (isFP == false) {
@@ -140,7 +141,12 @@ public class CameraPositions : MonoBehaviour
 			if ((Input.mousePosition.y >= (Screen.height/285 * 100)) && (Input.mousePosition.y <= (Screen.height/285 * 266)))
 			{
 				//if (!(Input.mousePosition.x / Screen.width >= 48/35 ))
-				isRotating = true;
+
+				if (PlayerManager.Instance.isObjSelected == false) {
+					
+					isRotating = true;
+				}
+
 			}
 					
 		}
