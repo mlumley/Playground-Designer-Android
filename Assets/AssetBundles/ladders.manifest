@@ -1,0 +1,34 @@
+ManifestFileVersion: 0
+CRC: 77217112
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 03082c3dc610d5cc4b52f1fef58f0b90
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 3432779acd6555d529cc4596fe61073b
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+Assets:
+- Assets/Models/ladder_timber.skp
+- Assets/Models/rocket_wriggler.skp
+- Assets/Models/ladder_twisted.skp
+- Assets/Models/cubby_steps_tire.skp
+- Assets/Models/rope_net.skp
+- Assets/Models/step_cubbyhouse.skp
+- Assets/Models/heaving_hoops.skp
+Dependencies: []

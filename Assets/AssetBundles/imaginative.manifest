@@ -1,0 +1,44 @@
+ManifestFileVersion: 0
+CRC: 1352026317
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 9893267c779db96c0b8c02a2b18d05d7
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 682d18ec161ce2d3806a6407573c7615
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+Assets:
+- Assets/Models/dragonfly.skp
+- Assets/Models/stage.skp
+- Assets/Models/matatu_tu.skp
+- Assets/Models/animalian.skp
+- Assets/Models/crazy_caterpillar_bighead.skp
+- Assets/Models/train.skp
+- Assets/Models/octopus_icosahedron.skp
+- Assets/Models/elephant.skp
+- Assets/Models/matatu.skp
+- Assets/Models/ant.skp
+- Assets/Models/tha_wha_car.skp
+- Assets/Models/mini_motorcyle.skp
+- Assets/Models/scorpion.skp
+- Assets/Models/aeroplane.skp
+- Assets/Models/crazy_caterpillar.skp
+Dependencies: []

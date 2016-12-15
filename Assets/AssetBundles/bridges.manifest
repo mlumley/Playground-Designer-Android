@@ -1,0 +1,39 @@
+ManifestFileVersion: 0
+CRC: 4071416432
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 0e4c9f1ceaa5214241025a8add76ae62
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 3432779acd6555d529cc4596fe61073b
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+Assets:
+- Assets/Models/bridge_4_pole_motorbike_tire.skp
+- Assets/Models/bridge_tready.skp
+- Assets/Models/catapillar_bridge.skp
+- Assets/Models/crazy_catapillar_v2.skp
+- Assets/Models/stairway_too_michelin.skp
+- Assets/Models/bridge_wobble_tire.skp
+- Assets/Models/bridge_simple_tire.skp
+- Assets/Models/tire_chain_bridge.skp
+- Assets/Models/bridge_wobble_wire_cross.skp
+- Assets/Models/bridge_tread_loop.skp
+- Assets/Models/bridge_tready_cave_jump.skp
+- Assets/Models/motorbike_tyre_bridge.skp
+Dependencies: []

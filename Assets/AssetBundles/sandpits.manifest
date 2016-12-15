@@ -1,0 +1,38 @@
+ManifestFileVersion: 0
+CRC: 429044257
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: bfce26e7ab67554f8c820e304c469782
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 682d18ec161ce2d3806a6407573c7615
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+Assets:
+- Assets/Models/scoop_shaft.skp
+- Assets/Models/sand_water_pipes.skp
+- Assets/Models/tyre_sandpit_combo.skp
+- Assets/Models/sandwater_table_extended.skp
+- Assets/Models/sandpit_square.skp
+- Assets/Models/sandpit_double.skp
+- Assets/Models/sand_water_table.skp
+- Assets/Models/sandpit_floral.skp
+- Assets/Models/sandpit_floral_extended.skp
+Dependencies: []

@@ -1,0 +1,35 @@
+ManifestFileVersion: 0
+CRC: 3541965048
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 68894f0736293d942cf06562864ce065
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 3432779acd6555d529cc4596fe61073b
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+Assets:
+- Assets/Models/roller_tyre.skp
+- Assets/Models/clock.skp
+- Assets/Models/compass.skp
+- Assets/Models/maze_mega.skp
+- Assets/Models/rebar_threader.skp
+- Assets/Models/bumper_cars.skp
+- Assets/Models/maze_mini.skp
+- Assets/Models/calculator_tire.skp
+Dependencies: []

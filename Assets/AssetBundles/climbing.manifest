@@ -1,0 +1,56 @@
+ManifestFileVersion: 0
+CRC: 3994968497
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: d1232c31dff274fc6195a9db407946fe
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 682d18ec161ce2d3806a6407573c7615
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+Assets:
+- Assets/Models/tire_hurdle.skp
+- Assets/Models/cartire_climber.skp
+- Assets/Models/triangular_climber.skp
+- Assets/Models/tire_chain_arch.skp
+- Assets/Models/cube_climber.skp
+- Assets/Models/pyramid_empire_state.skp
+- Assets/Models/3_pole_rocketship.skp
+- Assets/Models/platform_square.skp
+- Assets/Models/wall_car_tyre_play.skp
+- Assets/Models/treehugger.skp
+- Assets/Models/spider_net_motorbiketire.skp
+- Assets/Models/triple_shrimp.skp
+- Assets/Models/tire_chain_arch_small.skp
+- Assets/Models/car_tire_sphere.skp
+- Assets/Models/cube_climber_nursery.skp
+- Assets/Models/treehugger_nursery.skp
+- Assets/Models/pyramid_truck_tire.skp
+- Assets/Models/4_pole_rocketship.skp
+- Assets/Models/mayan_pyramid.skp
+- Assets/Models/twister.skp
+- Assets/Models/cargo_net_motorbiketire.skp
+- Assets/Models/pentagon.skp
+- Assets/Models/climbing_cross_simple.skp
+- Assets/Models/wonky_wood_climber.skp
+- Assets/Models/tent_climber.skp
+- Assets/Models/treehugger_pole.skp
+- Assets/Models/teepee_pyramid.skp
+Dependencies: []

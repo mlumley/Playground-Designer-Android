@@ -1,0 +1,41 @@
+ManifestFileVersion: 0
+CRC: 2643630819
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: f0b81a5fae882a385abb16a0bb778b45
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 3432779acd6555d529cc4596fe61073b
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+Assets:
+- Assets/Models/swing_teardrop.skp
+- Assets/Models/swing_motobike.skp
+- Assets/Models/hammock_set_with_roof.skp
+- Assets/Models/swing_monkey.skp
+- Assets/Models/swing_seat_simple.skp
+- Assets/Models/bucket_seat_tire_toddler.skp
+- Assets/Models/swing_tractorflatmaxi.skp
+- Assets/Models/swing_double.skp
+- Assets/Models/swing_double_simple.skp
+- Assets/Models/swing_motorbike_tirethread.skp
+- Assets/Models/strong_swing.skp
+- Assets/Models/swing_truck_tire_hammock.skp
+- Assets/Models/swingseat_tire_rope.skp
+- Assets/Models/swingseat_nursery.skp
+Dependencies: []

@@ -1,0 +1,33 @@
+ManifestFileVersion: 0
+CRC: 1239979361
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: fe45257e0534a2d0f9df24e5dd2b0748
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 682d18ec161ce2d3806a6407573c7615
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+Assets:
+- Assets/Models/earth_mound_small.skp
+- Assets/Models/earth_mound_straight.skp
+- Assets/Models/earth_mound_curved.skp
+- Assets/Models/earth hill with steps.skp
+Dependencies: []
