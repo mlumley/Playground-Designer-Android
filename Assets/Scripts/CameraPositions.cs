@@ -141,12 +141,12 @@ public class CameraPositions : MonoBehaviour
 			if ((Input.mousePosition.y >= (Screen.height/285 * 100)) && (Input.mousePosition.y <= (Screen.height/285 * 266)))
 			{
 				//if (!(Input.mousePosition.x / Screen.width >= 48/35 ))
-				/*
+
 				if (PlayerManager.Instance.isObjSelected == false) {
 					
 					isRotating = true;
 				}
-				*/
+
 			}
 					
 		}
