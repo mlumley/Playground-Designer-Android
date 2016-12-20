@@ -35,6 +35,7 @@ public class DataManager : MonoBehaviour {
     public Dropdown landscapeDropdown;
 
     public static List<AssetBundle> modelBundles = new List<AssetBundle>();
+    public static string[] names;
 
 
     void Start() {
@@ -42,14 +43,14 @@ public class DataManager : MonoBehaviour {
 
         //todo: get ID in web player (eg https://docs.unity3d.com/ScriptReference/Application-absoluteURL.html)
         int userId = 1; //test user
-        int savedPlaygroundId = 0; //not saved
+        int savedPlaygroundId = 12; //not saved
 
         //string url = "http://playgroundideas.endzone.io/app-api/wp-simulate/app.php?userId=1&designId=2";
 
         Debug.Log("Initial userId: " + userId + ", savedPlaygroundId: " + savedPlaygroundId);
 
-        string[] names = { "balance", "bridges", "buildings", "climbing", "cubbies", "fireman", "furniture", "ground_cover", "hills", "imaginative", "ladders", "monkey_bars", "musical", "natural", "other", "rocks_logs", "sandpits", "seesaw", "slides", "sports", "swings", "trees", "tunnel" };
-
+        string[] names1 = { "balance", "bridges", "buildings", "climbing", "cubbies", "fireman", "furniture", "ground_cover", "hills", "imaginative", "ladders", "monkey_bars", "musical", "natural", "other", "rocks_logs", "sandpits", "seesaw", "slides", "sports", "swings", "trees", "tunnel" };
+        names = names1;
 
         foreach (string name in names) {
             StartCoroutine(DownloadAndCache(name));
@@ -71,7 +72,6 @@ public class DataManager : MonoBehaviour {
         this.UserId = userId;
 
         //StartCoroutine(LoadUser(userId));
-
         if (savedPlaygroundId != 0) {
             Debug.Log("Loading saved playground");
             StartCoroutine(LoadSavedPlayground(savedPlaygroundId));
@@ -109,6 +109,7 @@ public class DataManager : MonoBehaviour {
                     throw new Exception("WWW download had an error:" + assetBundleLink.error);
                 modelBundle = assetBundleLink.assetBundle;
             }*/
+            yield return new WaitUntil (() => modelBundles.Count == names.Length);
             LoadSaveFile(N["name"], N["playground"]["model"]);
 
         }
@@ -255,10 +256,10 @@ public class DataManager : MonoBehaviour {
     IEnumerator DownloadAndCache(string bundleName) {
         // Load the AssetBundle file from Cache if it exists with the same version or download and store it in the cache
         //using (WWW www = WWW.LoadFromCacheOrDownload(BaseUrlOfApi + "wp-simulate/models", 1)) {
-        Debug.Log("Started downloading " + bundleName);
+        //Debug.Log("Started downloading " + bundleName);
         using (WWW www = new WWW(BaseUrlOfApi + "wp-simulate/AssetBundles/" + bundleName)) {
             yield return www;
-            Debug.Log("Finished downloading " + bundleName);
+            //Debug.Log("Finished downloading " + bundleName);
             if (www.error != null)
                 throw new Exception("WWW download had an error:" + www.error);
             modelBundles.Add(www.assetBundle);
