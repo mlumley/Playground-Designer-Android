@@ -26,7 +26,7 @@ public class DataManager : MonoBehaviour {
 
     public string NameOfJsonFile;
     public string BaseUrlOfApi;
-    public int UserId;
+    public string UserId;
 
     public static List<DesignInfo> objectInfoList;
 
@@ -41,7 +41,7 @@ public class DataManager : MonoBehaviour {
         StartCoroutine(LoadData());
 
         //todo: get ID in web player (eg https://docs.unity3d.com/ScriptReference/Application-absoluteURL.html)
-        int userId = 1; //test user
+        string userId = "1"; //test user
         int savedPlaygroundId = 0; //not saved
 
         //string url = "http://playgroundideas.endzone.io/app-api/wp-simulate/app.php?userId=1&designId=2";
@@ -60,7 +60,7 @@ public class DataManager : MonoBehaviour {
         string url = Application.absoluteURL;
         var nc = UriHelper.GetQueryString(url);
         if (nc["userId"] != null)
-            userId = Convert.ToInt16(nc["userId"]);
+            userId = nc["userId"] as string;
         if (nc["designId"] != null)
             savedPlaygroundId = Convert.ToInt16(nc["designId"]);
 
@@ -114,7 +114,7 @@ public class DataManager : MonoBehaviour {
         }
     }
 
-    IEnumerator LoadUser(int userId) {
+    IEnumerator LoadUser(string userId) {
         string jsonUrl = BaseUrlOfApi + "/users/get.php?id=" + userId;
         string json = "";
 
