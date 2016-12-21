@@ -59,14 +59,18 @@ public class DataManager : MonoBehaviour {
 
 #if UNITY_WEBGL
         string url = Application.absoluteURL;
+        Debug.Log("Application.absoluteURL: " + url);
+
         var nc = UriHelper.GetQueryString(url);
-        if (nc["userId"] != null)
-            userId = nc["userId"] as string;
-        if (nc["designId"] != null)
+        if (!String.IsNullOrEmpty(nc["userId"]))
+            userId = nc["userId"];
+
+        Debug.Log("WebGL userId from URL: " + userId);
+
+        if (!String.IsNullOrEmpty(nc["designId"]))
             savedPlaygroundId = Convert.ToInt16(nc["designId"]);
 
-        Debug.Log("Application.absoluteURL: " + url);
-        Debug.Log("WebGL userId: " + userId + ", savedPlaygroundId: " + savedPlaygroundId);
+        Debug.Log("WebGL savedPlaygroundId from URL: " + savedPlaygroundId);
 #endif
 
         this.UserId = userId;
