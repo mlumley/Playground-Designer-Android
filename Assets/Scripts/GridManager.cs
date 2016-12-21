@@ -106,6 +106,6 @@ public class GridManager : MonoBehaviour {
 		startZ = -(float) gridSizeZ / 2f;
 		startY = -(float) gridSizeY / 2f;
 
-		CameraPositions.Instance.UpdatePosition ();
+		//CameraPositions.Instance.UpdatePosition ();
 	}
 }
