@@ -11,12 +11,12 @@ namespace Assets.Scripts.Classes
     {
         public static User Parse(JSONNode json)
         {
-            User user = new User { ID = Convert.ToInt16(json["user"]["id"].Value), Name = json["user"]["name"].Value };
+            User user = new User { ID = json["user"]["id"].Value, Name = json["user"]["name"].Value };
 
             return user;
         }
 
-        public int ID { get; set; }
+        public string ID { get; set; }
         public string Name { get; set; }
     }
 }
