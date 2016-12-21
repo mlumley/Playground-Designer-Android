@@ -49,7 +49,7 @@ public class CameraPositions : MonoBehaviour {
     public Transform cameraAnchor;
 
 
-    // New things
+    // Rotation
     Vector3 lastMousePos = new Vector3();
     Vector3 currentMousePos = new Vector3();
     float deltaX = 0;
@@ -98,7 +98,7 @@ public class CameraPositions : MonoBehaviour {
         // Lines 56 - 124 = First Person View code
 
         if (!isFP) {
-            Rotating();
+            //Rotating();
         }
 
         /*if (Input.GetKeyDown("space")) {
@@ -171,7 +171,7 @@ public class CameraPositions : MonoBehaviour {
 
 
 
-        /*if (Input.GetKey(KeyCode.UpArrow) && isFP == false)
+        if (Input.GetKey(KeyCode.UpArrow) && isFP == false)
 		{
 			ZoomIn();
 		}
@@ -191,7 +191,8 @@ public class CameraPositions : MonoBehaviour {
 				if (PlayerManager.Instance.isObjSelected == false) {
 					
 					isRotating = true;
-				}
+                    
+                }
 
 			}
 					
@@ -200,9 +201,13 @@ public class CameraPositions : MonoBehaviour {
 
 		if (!Input.GetMouseButton(0)) isRotating = false;
 
+        if (isRotating) {
+            Rotating();
+        }
 
 
-		if (isRotating) {
+
+		/*if (isRotating) {
 
 			undergroundChecker.x = this.transform.position.x;
 			undergroundChecker.y = this.transform.position.y;
