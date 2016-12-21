@@ -43,7 +43,7 @@ public class DataManager : MonoBehaviour {
 
         //todo: get ID in web player (eg https://docs.unity3d.com/ScriptReference/Application-absoluteURL.html)
         int userId = 1; //test user
-        int savedPlaygroundId = 12; //not saved
+        int savedPlaygroundId = 0; //not saved
 
         //string url = "http://playgroundideas.endzone.io/app-api/wp-simulate/app.php?userId=1&designId=2";
 
@@ -145,34 +145,36 @@ public class DataManager : MonoBehaviour {
 
 
     public IEnumerator SavePlayground(string name, string saveFile) {
-        //yield return new WaitForEndOfFrame();
+
+#if UNITY_EDITOR
+        Debug.Log("WaitForEndOfFrame doesn't work in editor");
+#elif UNITY_WEBGL
+        yield return new WaitForEndOfFrame();
+#endif
 
         string apiUrl = BaseUrlOfApi + "/playgrounds/save.php";
         string json = "";
 
 
-        int width = Screen.width - 20;
-        int height = Screen.height - 150;
-        Texture2D tex = new Texture2D(width, height);
+        int width = Screen.width;
+        int height = Screen.height;
+        Texture2D tex = new Texture2D(width, height, TextureFormat.RGB24, false);
 
-        tex.ReadPixels(new Rect(0, 220, width, height), 0, 0);
+        tex.ReadPixels(new Rect(0, 0, width, height), 0, 0);
         tex.Apply();
 
         byte[] bytes = tex.EncodeToPNG();
-        UnityEngine.Object.Destroy(tex);
+        Destroy(tex);
 
-#if UNITY_WEBGL
-
-#else
-        Debug.Log(Application.dataPath + "/SavedScreen.png");
-        File.WriteAllBytes(Application.dataPath + "/SavedScreen.png", bytes);
-#endif
+        // Comment out for deploy
+        //Debug.Log(Application.dataPath + "/SavedScreen.png");
+        //File.WriteAllBytes(Application.dataPath + "/SavedScreen.png", bytes);
 
         // Create a Web Form
         WWWForm form = new WWWForm();
         form.AddField("userId", UserId);
         form.AddField("name", name);
-        form.AddBinaryData("fileUpload", bytes, "screenShot.png", "image/png");
+        //form.AddBinaryData("fileUpload", bytes, "screenShot.png", "image/png");
         Debug.Log(saveFile);
         form.AddField("model", saveFile);
         form.AddBinaryData("screenshot", bytes, "screenShot_" + name + ".png", "image/png");
