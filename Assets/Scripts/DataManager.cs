@@ -35,6 +35,7 @@ public class DataManager : MonoBehaviour {
     public Dropdown landscapeDropdown;
 
     public static List<AssetBundle> modelBundles = new List<AssetBundle>();
+    public static string[] names;
 
 
     void Start() {
@@ -48,8 +49,8 @@ public class DataManager : MonoBehaviour {
 
         Debug.Log("Initial userId: " + userId + ", savedPlaygroundId: " + savedPlaygroundId);
 
-        string[] names = { "balance", "bridges", "buildings", "climbing", "cubbies", "fireman", "furniture", "ground_cover", "hills", "imaginative", "ladders", "monkey_bars", "musical", "natural", "other", "rocks_logs", "sandpits", "seesaw", "slides", "sports", "swings", "trees", "tunnel" };
-
+        string[] names1 = { "balance", "bridges", "buildings", "climbing", "cubbies", "fireman", "furniture", "ground_cover", "hills", "imaginative", "ladders", "monkey_bars", "musical", "natural", "other", "rocks_logs", "sandpits", "seesaw", "slides", "sports", "swings", "trees", "tunnel" };
+        names = names1;
 
         foreach (string name in names) {
             StartCoroutine(DownloadAndCache(name));
@@ -71,7 +72,6 @@ public class DataManager : MonoBehaviour {
         this.UserId = userId;
 
         //StartCoroutine(LoadUser(userId));
-
         if (savedPlaygroundId != 0) {
             Debug.Log("Loading saved playground");
             StartCoroutine(LoadSavedPlayground(savedPlaygroundId));
@@ -109,6 +109,7 @@ public class DataManager : MonoBehaviour {
                     throw new Exception("WWW download had an error:" + assetBundleLink.error);
                 modelBundle = assetBundleLink.assetBundle;
             }*/
+            yield return new WaitUntil (() => modelBundles.Count == names.Length);
             LoadSaveFile(N["name"], N["playground"]["model"]);
 
         }
@@ -144,34 +145,36 @@ public class DataManager : MonoBehaviour {
 
 
     public IEnumerator SavePlayground(string name, string saveFile) {
-        //yield return new WaitForEndOfFrame();
+
+#if UNITY_EDITOR
+        Debug.Log("WaitForEndOfFrame doesn't work in editor");
+#elif UNITY_WEBGL
+        yield return new WaitForEndOfFrame();
+#endif
 
         string apiUrl = BaseUrlOfApi + "/playgrounds/save.php";
         string json = "";
 
 
-        int width = Screen.width - 20;
-        int height = Screen.height - 150;
-        Texture2D tex = new Texture2D(width, height);
+        int width = Screen.width;
+        int height = Screen.height;
+        Texture2D tex = new Texture2D(width, height, TextureFormat.RGB24, false);
 
-        tex.ReadPixels(new Rect(0, 220, width, height), 0, 0);
+        tex.ReadPixels(new Rect(0, 0, width, height), 0, 0);
         tex.Apply();
 
         byte[] bytes = tex.EncodeToPNG();
-        UnityEngine.Object.Destroy(tex);
+        Destroy(tex);
 
-#if UNITY_WEBGL
-
-#else
-        Debug.Log(Application.dataPath + "/SavedScreen.png");
-        File.WriteAllBytes(Application.dataPath + "/SavedScreen.png", bytes);
-#endif
+        // Comment out for deploy
+        //Debug.Log(Application.dataPath + "/SavedScreen.png");
+        //File.WriteAllBytes(Application.dataPath + "/SavedScreen.png", bytes);
 
         // Create a Web Form
         WWWForm form = new WWWForm();
         form.AddField("userId", UserId);
         form.AddField("name", name);
-        form.AddBinaryData("fileUpload", bytes, "screenShot.png", "image/png");
+        //form.AddBinaryData("fileUpload", bytes, "screenShot.png", "image/png");
         Debug.Log(saveFile);
         form.AddField("model", saveFile);
         form.AddBinaryData("screenshot", bytes, "screenShot_" + name + ".png", "image/png");
@@ -255,10 +258,10 @@ public class DataManager : MonoBehaviour {
     IEnumerator DownloadAndCache(string bundleName) {
         // Load the AssetBundle file from Cache if it exists with the same version or download and store it in the cache
         //using (WWW www = WWW.LoadFromCacheOrDownload(BaseUrlOfApi + "wp-simulate/models", 1)) {
-        Debug.Log("Started downloading " + bundleName);
+        //Debug.Log("Started downloading " + bundleName);
         using (WWW www = new WWW(BaseUrlOfApi + "wp-simulate/AssetBundles/" + bundleName)) {
             yield return www;
-            Debug.Log("Finished downloading " + bundleName);
+            //Debug.Log("Finished downloading " + bundleName);
             if (www.error != null)
                 throw new Exception("WWW download had an error:" + www.error);
             modelBundles.Add(www.assetBundle);
