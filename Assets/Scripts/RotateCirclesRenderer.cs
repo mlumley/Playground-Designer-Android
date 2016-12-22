@@ -44,7 +44,7 @@ public class RotateCirclesRenderer : MonoBehaviour {
 		if (!trans) return;
 
 		BigCircleRadius = rad;
-		SmallCircleRadius = BigCircleRadius / 8f;
+		SmallCircleRadius = BigCircleRadius / 4f;
 	}
 
 	public void SetDegrees (float degreesToAdd)

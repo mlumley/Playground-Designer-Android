@@ -2,6 +2,8 @@
 using System;
 //using System.Collections.Generic;
 using System.Collections;
+using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 public class CameraPositions : MonoBehaviour {
 
@@ -171,43 +173,57 @@ public class CameraPositions : MonoBehaviour {
 
 
 
-        if (Input.GetKey(KeyCode.UpArrow) && isFP == false)
-		{
-			ZoomIn();
-		}
+        if (Input.GetKey(KeyCode.UpArrow) && isFP == false) {
+            ZoomIn();
+        }
 
-		if (Input.GetKey(KeyCode.DownArrow) && isFP == false)
-		{
-			ZoomOut();
-		}
+        if (Input.GetKey(KeyCode.DownArrow) && isFP == false) {
+            ZoomOut();
+        }
 
 
-		if (Input.GetMouseButtonDown (0) && isFP == false) {
-			mousePosition = Input.mousePosition;
-			if ((Input.mousePosition.y >= (Screen.height/285 * 100)) && (Input.mousePosition.y <= (Screen.height/285 * 266)))
-			{
-				//if (!(Input.mousePosition.x / Screen.width >= 48/35 ))
+        if (Input.GetMouseButtonDown(0) && isFP == false) {
+            mousePosition = Input.mousePosition;
+            // Needs to be enabled only when the mouse doesn't hit the ui
+            //if ((Input.mousePosition.y >= (Screen.height / 285 * 100)) && (Input.mousePosition.y <= (Screen.height / 285 * 266))) {
+            //if (!(Input.mousePosition.x / Screen.width >= 48/35 ))
 
-				if (PlayerManager.Instance.isObjSelected == false) {
-					
-					isRotating = true;
-                    
+            // Check if we hit the UI
+            PointerEventData cursor = new PointerEventData(EventSystem.current);
+            cursor.position = Input.mousePosition;
+            System.Collections.Generic.List<RaycastResult> objectsHit = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(cursor, objectsHit);
+            bool hitUI = false;
+
+            foreach (RaycastResult result in objectsHit) {
+                //Debug.Log(result.gameObject.name);
+                if (result.gameObject.layer == LayerMask.NameToLayer("UI")) {
+                    hitUI = true;
                 }
+            }
 
-			}
-					
-		}
+            //Debug.Log(PlayerManager.Instance.hitUI);
+            if (PlayerManager.Instance.isObjSelected == false && !hitUI) {
+
+                isRotating = true;
+
+            }
+
+            //}
+
+        }
 
 
-		if (!Input.GetMouseButton(0)) isRotating = false;
+        if (!Input.GetMouseButton(0))
+            isRotating = false;
 
         if (isRotating) {
-            Rotating();
+            //Rotating();
         }
 
 
 
-		/*if (isRotating) {
+        /*if (isRotating) {
 
 			undergroundChecker.x = this.transform.position.x;
 			undergroundChecker.y = this.transform.position.y;

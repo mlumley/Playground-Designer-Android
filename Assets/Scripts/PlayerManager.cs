@@ -40,8 +40,132 @@ public class PlayerManager : MonoBehaviour {
 
     bool hasHitUI = false;
 
+    // New
+    public GameObject cameraAnchor;
+    bool moveMode = false;
+    bool rotateObject = false;
+    bool hitUI = false;
+
+    Vector3 lastMousePos = new Vector3();
+    Vector3 currentMousePos = new Vector3();
+    float deltaX = 0;
+    float deltaY = 0;
+
     void Update() {
+
+
+
+        // Selected an object and deselect when not clicking on an object
         if (Input.GetMouseButtonDown(0)) {
+            //.Debug.Log("Mouse Down");
+            RaycastHit hitInfo = new RaycastHit();
+            bool hit = Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo);
+
+            // Check if we hit the UI
+            PointerEventData cursor = new PointerEventData(EventSystem.current);
+            cursor.position = Input.mousePosition;
+            List<RaycastResult> objectsHit = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(cursor, objectsHit);
+            hitUI = false;
+
+            foreach (RaycastResult result in objectsHit) {
+                Debug.Log(result.gameObject.name);
+                if (result.gameObject.layer == LayerMask.NameToLayer("UI")) {
+                    hitUI = true;
+                }
+            }
+
+            if (hit && !hitUI) {
+                if (currentObject) {
+                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    RaycastHit groundHit = new RaycastHit();
+                    if (Physics.Raycast(ray, out groundHit, Mathf.Infinity, 1 << LayerMask.NameToLayer("GridCollider"))) {
+                        if (RotateCirclesRenderer.Instance.HitRotateCircleCheck(groundHit.point)) {
+                            Debug.Log("Hit rotation");
+                            rotateObject = true;
+                        }
+                    }
+                }
+                if (hitInfo.transform.gameObject.tag == "Models" && !rotateObject) {
+                    // Select new object
+                    if (currentObject == null || !currentObject.Equals(hitInfo.transform)) {
+                        Debug.Log("Selected " + hitInfo.transform.name);
+                        currentObject = hitInfo.transform;
+                        isObjSelected = true;
+                        //moveMode = true;
+                        SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
+                    }
+                    // Move selected object
+                    else {
+                        Debug.Log("Move Mode");
+                        //SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
+                        isObjSelected = true;
+                        moveMode = true;
+                        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                        RaycastHit groundHit = new RaycastHit();
+                        if (Physics.Raycast(ray, out groundHit, Mathf.Infinity, 1 << LayerMask.NameToLayer("GridCollider"))) {
+                            Debug.Log("Hit " + groundHit.transform.name);
+                            //Debug.Log("Moving " + hitInfo.transform.name + " to " + groundHit.point);
+                            //currentObject.position = groundHit.point;
+                            //SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
+                        }
+                    }
+                }
+                else if (hitInfo.transform.gameObject.tag == "Ground" && !rotateObject) {
+                    Debug.Log("Hit ground");
+                    SetSelectableToNull();
+                }
+                else {
+                    Debug.Log("Hit " + hitInfo.transform.gameObject.name);
+                }
+            }
+            else {
+                Debug.Log("No hit");
+                SetSelectableToNull();
+            }
+        }
+
+        if (currentObject) {
+            if (Input.GetMouseButton(0) && rotateObject) {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit groundHit = new RaycastHit();
+                if (Physics.Raycast(ray, out groundHit, Mathf.Infinity, 1 << LayerMask.NameToLayer("GridCollider"))) {
+                    RaycastHit hitInfo5;
+                    if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo5, Mathf.Infinity, 1 << LayerMask.NameToLayer("GridCollider"))) {
+                        float angle = SignedAngleBetween(RotateCircleHitPreviousPoint - currentObject.position, hitInfo5.point - currentObject.position, Vector3.up);
+                        RotateCirclesRenderer.Instance.SetDegrees(-angle);
+                        RotateCircleHitPreviousPoint = hitInfo5.point;
+                    }
+                }
+            }
+            else if (Input.GetMouseButton(0) && moveMode) {
+                //Debug.Log("Move Mode");
+                //SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
+                isObjSelected = true;
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit groundHit = new RaycastHit();
+                if (Physics.Raycast(ray, out groundHit, Mathf.Infinity, 1 << LayerMask.NameToLayer("GridCollider"))) {
+                    //Debug.Log("Hit " + groundHit.transform.name);
+                    //Debug.Log("Moving " + hitInfo.transform.name + " to " + groundHit.point);
+                    Debug.Log("Point " + groundHit.point);
+                    currentObject.position = groundHit.point;
+                    //SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
+                }
+            }
+        }
+        else if (Input.GetMouseButton(0) && !hitUI) {
+            Rotating();
+        }
+        
+
+        if (Input.GetMouseButtonUp(0)) {
+            //moveMode = false;
+            rotateObject = false;
+        }
+
+
+
+        /*if (Input.GetMouseButtonDown(0)) {
             PointerEventData pointer1 = new PointerEventData(EventSystem.current);
             pointer1.position = Input.mousePosition;
             List<RaycastResult> raycastResults1 = new List<RaycastResult>();
@@ -205,7 +329,7 @@ public class PlayerManager : MonoBehaviour {
         if (Input.GetMouseButtonUp(0)) {
             if (HitRotateCirlce)
                 HitRotateCirlce = false;
-        }
+        }*/
     }
 
 
@@ -309,6 +433,7 @@ public class PlayerManager : MonoBehaviour {
 
     public void SetSelectableToNull() {
         isObjSelected = false;
+        moveMode = false;
         if (currentObject) {
             IUISelectable selectable = currentObject.GetComponent<IUISelectable>();
 
@@ -321,5 +446,38 @@ public class PlayerManager : MonoBehaviour {
         MoveableUISelected = !hasHitUI;
         ObjectWorldPanel.Instance.SetTarget(null);
         SelectedObjectCircleRenderer.Instance.SetSelectedObject(null);
+    }
+
+
+    void Rotating() {
+
+
+        if (Input.GetMouseButtonDown(0)) {
+
+            lastMousePos = Input.mousePosition;
+            //Debug.Log("Pressed " + lastMousePos.x);
+        }
+
+        if (Input.GetMouseButton(0)) {
+            currentMousePos = Input.mousePosition;
+            //Debug.Log("Current " + currentMousePos.x);
+            deltaX = lastMousePos.x - currentMousePos.x;
+            deltaY = lastMousePos.y - currentMousePos.y;
+
+            // Left to Right
+            if (lastMousePos.x != currentMousePos.x) {
+                //Debug.Log("DeltaX: " + deltaX);
+                cameraAnchor.transform.eulerAngles = new Vector3(cameraAnchor.transform.eulerAngles.x, cameraAnchor.transform.eulerAngles.y - deltaX * 0.5f, 0);
+            }
+
+            // Top to Bottom
+            if (lastMousePos.y != currentMousePos.y && cameraAnchor.transform.eulerAngles.x - deltaY * 0.5f < 90 && cameraAnchor.transform.eulerAngles.x - deltaY * 0.5f > 0) {
+                //cameraAnchor.Rotate(Vector3.right, deltaY * 0.5f);
+                cameraAnchor.transform.eulerAngles = new Vector3(cameraAnchor.transform.eulerAngles.x - deltaY * 0.5f, cameraAnchor.transform.eulerAngles.y, 0);
+            }
+
+            //cameraAnchor.eulerAngles = new Vector3(cameraAnchor.eulerAngles.x, cameraAnchor.eulerAngles.y, 0);
+            lastMousePos = currentMousePos;
+        }
     }
 }
