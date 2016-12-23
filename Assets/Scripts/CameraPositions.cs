@@ -43,6 +43,7 @@ public class CameraPositions : MonoBehaviour {
     // For first person view
     Vector3 temp_2 = new Vector3(0, 0, 0);
     float viewingAngle = 0.0f;
+    float lookingDownAngle = 10;
 
     // Speeds;
 
@@ -123,20 +124,20 @@ public class CameraPositions : MonoBehaviour {
 
         if (Input.GetKey(KeyCode.LeftArrow) && isFP == true) {
             viewingAngle -= 1f;
-            transform.rotation = Quaternion.Euler(0, viewingAngle, 0);
+            transform.rotation = Quaternion.Euler(lookingDownAngle, viewingAngle, 0);
 
         }
 
         if (Input.GetKey(KeyCode.RightArrow) && isFP == true) {
             viewingAngle += 1f;
-            transform.rotation = Quaternion.Euler(0, viewingAngle, 0);
+            transform.rotation = Quaternion.Euler(lookingDownAngle, viewingAngle, 0);
 
         }
 
         if (Input.GetKey(KeyCode.UpArrow) && isFP == true) {
 
 
-            /*temp_2.x = transform.position.x;
+            temp_2.x = transform.position.x;
             temp_2.y = transform.position.y;
             temp_2.z = transform.position.z;
 
@@ -144,15 +145,15 @@ public class CameraPositions : MonoBehaviour {
 
             temp_2.x += (float)(Math.Sin(viewingAngle * Math.PI / 180.0) / 10);
 
-            transform.position = new Vector3(temp_2.x, temp_2.y, temp_2.z);*/
+            transform.position = new Vector3(temp_2.x, temp_2.y, temp_2.z);
 
-            transform.position += transform.forward * 0.5f;
+            //transform.position += transform.forward * 0.5f;
 
         }
 
         if (Input.GetKey(KeyCode.DownArrow) && isFP == true) {
 
-            /*temp_2.x = transform.position.x;
+            temp_2.x = transform.position.x;
             temp_2.y = transform.position.y;
             temp_2.z = transform.position.z;
 
@@ -160,9 +161,9 @@ public class CameraPositions : MonoBehaviour {
 
             temp_2.x -= (float)(Math.Sin(viewingAngle * Math.PI / 180.0) / 10);
 
-            transform.position = new Vector3(temp_2.x, temp_2.y, temp_2.z);*/
+            transform.position = new Vector3(temp_2.x, temp_2.y, temp_2.z);
 
-            transform.position -= transform.forward * 0.5f;
+            //transform.position -= transform.forward * 0.5f;
         }
 
         // 3D Rotation code. The AND condition forbids first person view unless
@@ -285,7 +286,7 @@ public class CameraPositions : MonoBehaviour {
 
     public void TurnOnWalkAround() {
         transform.position = new Vector3(0, 2, 0);
-        transform.rotation = Quaternion.Euler(0.0f, 0, 0);
+        transform.rotation = Quaternion.Euler(lookingDownAngle, 0, 0);
         isFP = true;
         viewingAngle = 0.0f;
     }
