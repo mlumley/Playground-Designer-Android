@@ -385,14 +385,35 @@ public class PlayerManager : MonoBehaviour {
         GameObject newObject = Instantiate(request.asset) as GameObject;
         newObject.transform.position = Vector3.zero;
         newObject.AddComponent<BoxCollider>();
-        newObject.GetComponent<BoxCollider>().center = Vector3.zero;
-        newObject.GetComponent<BoxCollider>().size = new Vector3(10, 10, 10);
+        //newObject.GetComponent<BoxCollider>().center = Vector3.zero;
+        //newObject.GetComponent<BoxCollider>().size = new Vector3(10, 10, 10);
+        CalculateLocalBounds(newObject);
         newObject.GetComponent<BoxCollider>().isTrigger = true;
         newObject.AddComponent<SelectedObjectCollision>();
         newObject.layer = LayerMask.NameToLayer("DesignObject");
         newObject.tag = "Models";
         currentObject = newObject.transform;
         SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
+    }
+
+    private void CalculateLocalBounds(GameObject newObject) {
+        Quaternion currentRotation = newObject.transform.rotation;
+        newObject.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+
+        Bounds bounds = new Bounds(newObject.transform.position, Vector3.zero);
+
+        foreach (Renderer renderer in newObject.GetComponentsInChildren<Renderer>()) {
+            Debug.Log("Found Renderer");
+            bounds.Encapsulate(renderer.bounds);
+        }
+
+        Vector3 localCenter = bounds.center - newObject.transform.position;
+        bounds.center = localCenter;
+        Debug.Log("The local bounds of this model is " + bounds);
+        newObject.GetComponent<BoxCollider>().size = bounds.size;
+        newObject.GetComponent<BoxCollider>().center = new Vector3(0,localCenter.y,0);
+
+        newObject.transform.rotation = currentRotation;
     }
 
     public static IEnumerator LoadObjectAtPositionAndRotation(string objectName, Vector3 position, Quaternion rotation) {
