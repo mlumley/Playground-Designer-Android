@@ -23,7 +23,7 @@ public class PlayerManager : MonoBehaviour {
     }
 
     [HideInInspector]
-    public Transform currentObject;
+    public Transform currentObject = null;
 
     public Camera PlayerCamera;
 
@@ -45,6 +45,7 @@ public class PlayerManager : MonoBehaviour {
     bool moveMode = false;
     bool rotateObject = false;
     bool hitUI = false;
+    bool hitDelete = false;
 
     Vector3 lastMousePos = new Vector3();
     Vector3 currentMousePos = new Vector3();
@@ -67,11 +68,15 @@ public class PlayerManager : MonoBehaviour {
             List<RaycastResult> objectsHit = new List<RaycastResult>();
             EventSystem.current.RaycastAll(cursor, objectsHit);
             hitUI = false;
+            hitDelete = false;
 
             foreach (RaycastResult result in objectsHit) {
                 Debug.Log(result.gameObject.name);
                 if (result.gameObject.layer == LayerMask.NameToLayer("UI")) {
                     hitUI = true;
+                }
+                if (result.gameObject.tag == "DeleteButton") {
+                    hitDelete = true;
                 }
             }
 
@@ -94,6 +99,7 @@ public class PlayerManager : MonoBehaviour {
                         isObjSelected = true;
                         moveMode = false;
                         SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
+                        ObjectWorldPanel.Instance.SetTarget(currentObject);
                     }
                     // Move selected object
                     else {
@@ -119,7 +125,7 @@ public class PlayerManager : MonoBehaviour {
                     Debug.Log("Hit " + hitInfo.transform.gameObject.name);
                 }
             }
-            else {
+            else if(!hitDelete) {
                 Debug.Log("No hit");
                 SetSelectableToNull();
             }
@@ -448,7 +454,7 @@ public class PlayerManager : MonoBehaviour {
     }
 
     public void DeleteCurrentObject() {
-        DestroyImmediate(currentObject.gameObject);
+        Destroy(currentObject.gameObject);
         ObjectWorldPanel.Instance.SetTarget(null);
     }
 

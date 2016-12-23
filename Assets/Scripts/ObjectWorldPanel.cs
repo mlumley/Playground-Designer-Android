@@ -23,9 +23,8 @@ public class ObjectWorldPanel : MonoBehaviour {
 		}
 	}
 
-	private Transform target;
-
-	public GameObject PanelObject;
+    public GameObject DeleteButton;
+	private Transform target = null;
 	public Vector3 PanelOffset;
 
 	public void SetTarget (Transform targetTrans)
@@ -34,18 +33,18 @@ public class ObjectWorldPanel : MonoBehaviour {
 
 		if (target)
 		{
-			PanelObject.SetActive (true);
+            DeleteButton.SetActive (true);
 		}
 		else
 		{
-			PanelObject.SetActive (false);
+            DeleteButton.SetActive (false);
 		}
 	}		
 	void Update ()
 	{
 		if (target)
 		{
-			PanelObject.transform.position = Camera.main.WorldToScreenPoint (target.position + PanelOffset);
+            DeleteButton.transform.position = Camera.main.WorldToScreenPoint(target.position + PanelOffset);
 		}
 	}
 }
