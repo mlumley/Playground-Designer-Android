@@ -92,7 +92,7 @@ public class PlayerManager : MonoBehaviour {
                         Debug.Log("Selected " + hitInfo.transform.name);
                         currentObject = hitInfo.transform;
                         isObjSelected = true;
-                        //moveMode = true;
+                        moveMode = false;
                         SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
                     }
                     // Move selected object
