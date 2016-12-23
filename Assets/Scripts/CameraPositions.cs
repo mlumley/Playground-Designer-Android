@@ -300,7 +300,8 @@ public class CameraPositions : MonoBehaviour {
     public void ZoomIn() {
         zoomSpeed = 4;
         cameraMove = zoomSpeed * 0.25f * transform.forward;
-        transform.Translate(cameraMove, Space.World);
+        if(transform.position.z + cameraMove.z < -5)
+            transform.Translate(cameraMove, Space.World);
     }
 
     public void ZoomOut() {

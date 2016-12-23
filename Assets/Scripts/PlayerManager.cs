@@ -52,6 +52,8 @@ public class PlayerManager : MonoBehaviour {
     float deltaX = 0;
     float deltaY = 0;
 
+    ClickManager clickManager = new ClickManager();
+
     void Update() {
 
 
@@ -80,7 +82,7 @@ public class PlayerManager : MonoBehaviour {
                 }
             }
 
-            if (hit && !hitUI) {
+            if (hit && !hitUI && !hitDelete) {
                 if (currentObject) {
                     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                     RaycastHit groundHit = new RaycastHit();
@@ -92,17 +94,24 @@ public class PlayerManager : MonoBehaviour {
                     }
                 }
                 if (hitInfo.transform.gameObject.tag == "Models" && !rotateObject) {
+                    Debug.Log(currentObject);
                     // Select new object
-                    if (currentObject == null || !currentObject.Equals(hitInfo.transform)) {
+                    if ((currentObject == null || !currentObject.Equals(hitInfo.transform)) && clickManager.DoubleClick()) {
                         Debug.Log("Selected " + hitInfo.transform.name);
                         currentObject = hitInfo.transform;
                         isObjSelected = true;
-                        moveMode = false;
+                        //moveMode = true;
                         SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
                         ObjectWorldPanel.Instance.SetTarget(currentObject);
                     }
+                    
+                    else if (!currentObject && !clickManager.DoubleClick()) {
+                        Debug.Log("Object deselected");
+                        SetSelectableToNull();
+                    }
                     // Move selected object
-                    else {
+                    else //if(currentObject.Equals(hitInfo.transform))
+                    {
                         Debug.Log("Move Mode");
                         //SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
                         isObjSelected = true;
@@ -116,6 +125,7 @@ public class PlayerManager : MonoBehaviour {
                             //SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
                         }
                     }
+
                 }
                 else if (hitInfo.transform.gameObject.tag == "Ground" && !rotateObject) {
                     Debug.Log("Hit ground");
@@ -125,14 +135,17 @@ public class PlayerManager : MonoBehaviour {
                     Debug.Log("Hit " + hitInfo.transform.gameObject.name);
                 }
             }
-            else if(!hitDelete) {
+            else if (!hitDelete) {
                 Debug.Log("No hit");
                 SetSelectableToNull();
             }
         }
 
         if (currentObject) {
-            if (Input.GetMouseButton(0) && rotateObject) {
+            if (hitDelete) {
+                DeleteCurrentObject();
+            }
+            else if (Input.GetMouseButton(0) && rotateObject) {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit groundHit = new RaycastHit();
                 if (Physics.Raycast(ray, out groundHit, Mathf.Infinity, 1 << LayerMask.NameToLayer("GridCollider"))) {
@@ -153,7 +166,7 @@ public class PlayerManager : MonoBehaviour {
                 if (Physics.Raycast(ray, out groundHit, Mathf.Infinity, 1 << LayerMask.NameToLayer("GridCollider"))) {
                     //Debug.Log("Hit " + groundHit.transform.name);
                     //Debug.Log("Moving " + hitInfo.transform.name + " to " + groundHit.point);
-                    Debug.Log("Point " + groundHit.point);
+                    //Debug.Log("Point " + groundHit.point);
                     currentObject.position = groundHit.point;
                     //SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
                 }
@@ -162,7 +175,7 @@ public class PlayerManager : MonoBehaviour {
         else if (Input.GetMouseButton(0) && !hitUI) {
             Rotating();
         }
-        
+
 
         if (Input.GetMouseButtonUp(0)) {
             //moveMode = false;
@@ -365,6 +378,7 @@ public class PlayerManager : MonoBehaviour {
         SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);*/
 
         isObjSelected = true;
+        //moveMode = true;
 
         StartCoroutine(LoadObject(objectName));
     }
@@ -417,7 +431,7 @@ public class PlayerManager : MonoBehaviour {
         bounds.center = localCenter;
         Debug.Log("The local bounds of this model is " + bounds);
         newObject.GetComponent<BoxCollider>().size = bounds.size;
-        newObject.GetComponent<BoxCollider>().center = new Vector3(0,localCenter.y,0);
+        newObject.GetComponent<BoxCollider>().center = new Vector3(0, localCenter.y, 0);
 
         newObject.transform.rotation = currentRotation;
     }
@@ -498,9 +512,9 @@ public class PlayerManager : MonoBehaviour {
             }
 
             // Top to Bottom
-            if (lastMousePos.y != currentMousePos.y && cameraAnchor.transform.eulerAngles.x - deltaY * 0.5f < 90 && cameraAnchor.transform.eulerAngles.x - deltaY * 0.5f > 0) {
+            if (lastMousePos.y != currentMousePos.y && cameraAnchor.transform.eulerAngles.x + deltaY * 0.5f < 90 && cameraAnchor.transform.eulerAngles.x + deltaY * 0.5f > 5) {
                 //cameraAnchor.Rotate(Vector3.right, deltaY * 0.5f);
-                cameraAnchor.transform.eulerAngles = new Vector3(cameraAnchor.transform.eulerAngles.x - deltaY * 0.5f, cameraAnchor.transform.eulerAngles.y, 0);
+                cameraAnchor.transform.eulerAngles = new Vector3(cameraAnchor.transform.eulerAngles.x + deltaY * 0.5f, cameraAnchor.transform.eulerAngles.y, 0);
             }
 
             //cameraAnchor.eulerAngles = new Vector3(cameraAnchor.eulerAngles.x, cameraAnchor.eulerAngles.y, 0);

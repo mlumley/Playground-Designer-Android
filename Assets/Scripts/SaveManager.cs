@@ -7,17 +7,18 @@ using Assets.Scripts.Classes;
 
 
 namespace Assets.Scripts {
-
-
     public class SaveManager : MonoBehaviour {
 
         public InputField fileName;
+        public GameObject saveText;
 
         public void SavePlayground() {
             SaveFile save = MakeSaveFile();
             string saveJSON = JsonUtility.ToJson(save);
             //Debug.Log(saveJSON);
             StartCoroutine(DataManager.Instance.SavePlayground(fileName.text, saveJSON));
+            saveText.SetActive(true);
+            saveText.GetComponent<Animation>().Play();
         }
 
         public SaveFile MakeSaveFile() {
