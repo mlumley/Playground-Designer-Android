@@ -50,12 +50,15 @@ public class GridManager : MonoBehaviour {
 	}
 
 	void OnPostRender() 
-	{        
-		lineMaterial.SetPass( 0 );
+	{
+        GL.Begin(GL.LINES);
+        lineMaterial.SetPass( 0 );
 
-		GL.Begin( GL.LINES );
+        lineMaterial.renderQueue = 0;
 
-		for(float j = 0; j <= gridSizeY; j += StepSize)
+
+
+        for (float j = 0; j <= gridSizeY; j += StepSize)
 		{
 			//X axis lines
 			for(float i = 0; i <= gridSizeZ; i += StepSize)

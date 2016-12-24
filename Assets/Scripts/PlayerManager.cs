@@ -93,7 +93,7 @@ public class PlayerManager : MonoBehaviour {
                         }
                     }
                 }
-                if (hitInfo.transform.gameObject.tag == "Models" && !rotateObject) {
+                if ((hitInfo.transform.gameObject.tag == "Models" || hitInfo.transform.gameObject.tag == "PhotoObject") && !rotateObject) {
                     Debug.Log(currentObject);
                     // Select new object
                     if ((currentObject == null || !currentObject.Equals(hitInfo.transform)) && clickManager.DoubleClick()) {
@@ -104,14 +104,13 @@ public class PlayerManager : MonoBehaviour {
                         SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
                         ObjectWorldPanel.Instance.SetTarget(currentObject);
                     }
-                    
+
                     else if (!currentObject && !clickManager.DoubleClick()) {
                         Debug.Log("Object deselected");
                         SetSelectableToNull();
                     }
                     // Move selected object
-                    else //if(currentObject.Equals(hitInfo.transform))
-                    {
+                    else if(isObjSelected && currentObject.Equals(hitInfo.transform)) {
                         Debug.Log("Move Mode");
                         //SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
                         isObjSelected = true;
@@ -125,12 +124,40 @@ public class PlayerManager : MonoBehaviour {
                             //SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
                         }
                     }
+                    else {
+                        Debug.Log("Object deselected");
+                        SetSelectableToNull();
+                    }
 
                 }
                 else if (hitInfo.transform.gameObject.tag == "Ground" && !rotateObject) {
                     Debug.Log("Hit ground");
                     SetSelectableToNull();
                 }
+                /*else if (hitInfo.transform.gameObject.tag == "PhotoObject") {
+                    if ((currentObject == null || !currentObject.Equals(hitInfo.transform)) && clickManager.DoubleClick()) {
+                        Debug.Log("Selected " + hitInfo.transform.name);
+                        currentObject = hitInfo.transform;
+                        isObjSelected = true;
+                        //moveMode = true;
+                        SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
+                        ObjectWorldPanel.Instance.SetTarget(currentObject);
+                    }
+                    else if (isObjSelected) {
+                        Debug.Log("Move Mode");
+                        //SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
+                        isObjSelected = true;
+                        moveMode = true;
+                        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                        RaycastHit groundHit = new RaycastHit();
+                        if (Physics.Raycast(ray, out groundHit, Mathf.Infinity, 1 << LayerMask.NameToLayer("GridCollider"))) {
+                            Debug.Log("Hit " + groundHit.transform.name);
+                            //Debug.Log("Moving " + hitInfo.transform.name + " to " + groundHit.point);
+                            //currentObject.position = groundHit.point;
+                            //SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
+                        }
+                    }
+                }*/
                 else {
                     Debug.Log("Hit " + hitInfo.transform.gameObject.name);
                 }
@@ -384,6 +411,7 @@ public class PlayerManager : MonoBehaviour {
     }
 
     IEnumerator LoadObject(string objectName) {
+        yield return new WaitUntil(() => DataManager.modelBundles.Count == DataManager.names.Length);
         // Load and retrieve the AssetBundle
         AssetBundle[] bundles = DataManager.modelBundles.ToArray();
         AssetBundle bundle = new AssetBundle();
@@ -520,5 +548,11 @@ public class PlayerManager : MonoBehaviour {
             //cameraAnchor.eulerAngles = new Vector3(cameraAnchor.eulerAngles.x, cameraAnchor.eulerAngles.y, 0);
             lastMousePos = currentMousePos;
         }
+    }
+
+    public void SelectObject(GameObject obj) {
+        isObjSelected = true;
+        currentObject = obj.transform;
+        SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
     }
 }
