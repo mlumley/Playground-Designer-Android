@@ -39,7 +39,7 @@ public class CameraPositions : MonoBehaviour {
     // All the perspective modes (isRotating, isZooming and isFirstPerson)
     public bool isRotating = false;
     bool isZooming = false;
-    bool isFP = false;
+    public bool isFP = false;
 
     // For first person view
     Vector3 temp_2 = new Vector3(0, 0, 0);

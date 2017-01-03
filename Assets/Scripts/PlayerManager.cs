@@ -199,7 +199,7 @@ public class PlayerManager : MonoBehaviour {
                 }
             }
         }
-        else if (Input.GetMouseButton(0) && !hitUI) {
+        else if (Input.GetMouseButton(0) && !hitUI && !CameraPositions.Instance.isFP) {
             Rotating();
         }
 
