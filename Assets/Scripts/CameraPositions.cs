@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class CameraPositions : MonoBehaviour {
 
@@ -266,23 +267,26 @@ public class CameraPositions : MonoBehaviour {
 
     }
 
-    /*public void UpdatePosition() {
+    public void UpdatePosition() {
         if (isFP == false) {
             transform.position = new Vector3(0, 2, 0);
-            transform.rotation = Quaternion.Euler(0.0f, 0, 0);
+            transform.rotation = Quaternion.Euler(lookingDownAngle, 0, 0);
             isFP = true;
+            //walkAround.isOn = true;
+            //birdsEye.isOn = false;
             viewingAngle = 0.0f;
         }
 
         else if (isFP == true) {
             isFP = false;
-            transform.position = new Vector3(0, 14, -16);
-            transform.rotation = Quaternion.Euler(41.182f, 0, 0);
-
+            transform.localPosition = new Vector3(0, 0, -20);
+            transform.localRotation = Quaternion.identity;
+            //walkAround.isOn = false;
+            //birdsEye.isOn = true;
         }
 
         //StringToEdit = GUI.TextField (new Rect (10, 10, 200, 20), StringToEdit, 25);
-    }*/
+    }
 
     public void TurnOnWalkAround() {
         transform.position = new Vector3(0, 2, 0);
@@ -300,7 +304,7 @@ public class CameraPositions : MonoBehaviour {
     public void ZoomIn() {
         zoomSpeed = 4;
         cameraMove = zoomSpeed * 0.25f * transform.forward;
-        if(transform.position.z + cameraMove.z < -5)
+        if(transform.localPosition.z + cameraMove.z < -5)
             transform.Translate(cameraMove, Space.World);
     }
 
