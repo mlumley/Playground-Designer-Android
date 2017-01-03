@@ -59,6 +59,9 @@ public class CameraPositions : MonoBehaviour {
     float deltaX = 0;
     float deltaY = 0;
 
+    // Ground
+    public GameObject ground;
+
 
     void Start() {
         //transform.position = new Vector3(0f,14f,-16f);
@@ -267,7 +270,7 @@ public class CameraPositions : MonoBehaviour {
 
     }
 
-    public void UpdatePosition() {
+    /*public void UpdatePosition() {
         if (isFP == false) {
             transform.position = new Vector3(0, 2, 0);
             transform.rotation = Quaternion.Euler(lookingDownAngle, 0, 0);
@@ -286,17 +289,21 @@ public class CameraPositions : MonoBehaviour {
         }
 
         //StringToEdit = GUI.TextField (new Rect (10, 10, 200, 20), StringToEdit, 25);
-    }
+    }*/
 
     public void TurnOnWalkAround() {
-        transform.position = new Vector3(0, 2, 0);
-        transform.rotation = Quaternion.Euler(lookingDownAngle, 0, 0);
+        transform.parent.position = new Vector3(0, 2, -ground.transform.localScale.z*10/2);
+        transform.parent.rotation = Quaternion.Euler(lookingDownAngle, 0, 0);
+        transform.localPosition = Vector3.zero;
+        transform.localRotation = Quaternion.identity;
         isFP = true;
         viewingAngle = 0.0f;
     }
 
     public void TurnOffWalkAround() {
         isFP = false;
+        transform.parent.position = new Vector3(0, 0, 0);
+        transform.parent.rotation = Quaternion.Euler(45, 0, 0);
         transform.localPosition = new Vector3(0, 0, -20);
         transform.localRotation = Quaternion.identity;
     }
