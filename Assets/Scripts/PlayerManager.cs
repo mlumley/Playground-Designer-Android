@@ -184,6 +184,7 @@ public class PlayerManager : MonoBehaviour {
         if (currentObject) {
             if (hitDelete) {
                 DeleteCurrentObject();
+                SetSelectableToNull();
             }
             else if (Input.GetMouseButton(0) && rotateObject) {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -473,6 +474,7 @@ public class PlayerManager : MonoBehaviour {
         currentObject = newObject.transform;
         moveMode = true;
         SelectObject(currentObject.gameObject);
+        ObjectWorldPanel.Instance.SetTarget(currentObject);
     }
 
     private void CalculateLocalBounds(GameObject newObject) {

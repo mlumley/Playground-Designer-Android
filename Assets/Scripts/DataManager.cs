@@ -27,6 +27,7 @@ public class DataManager : MonoBehaviour {
     public string NameOfJsonFile;
     public string BaseUrlOfApi;
     public string UserId;
+    public string DesignId;
 
     public static List<DesignInfo> objectInfoList;
 
@@ -36,6 +37,8 @@ public class DataManager : MonoBehaviour {
 
     public static List<AssetBundle> modelBundles = new List<AssetBundle>();
     public static string[] names;
+
+    private bool preexitingPlayground = false;
 
 
     void Start() {
@@ -74,10 +77,12 @@ public class DataManager : MonoBehaviour {
 #endif
 
         this.UserId = userId;
+        this.DesignId = savedPlaygroundId.ToString();
 
         //StartCoroutine(LoadUser(userId));
         if (savedPlaygroundId != 0) {
             Debug.Log("Loading saved playground");
+            preexitingPlayground = true;
             StartCoroutine(LoadSavedPlayground(savedPlaygroundId));
         }
     }
@@ -182,6 +187,13 @@ public class DataManager : MonoBehaviour {
         WWWForm form = new WWWForm();
         form.AddField("userId", UserId);
         form.AddField("name", name);
+        if (preexitingPlayground) {
+            Debug.Log("DesignID " + DesignId);
+            form.AddField("designId", DesignId);
+        }
+        else {
+            preexitingPlayground = true;
+        }
         //form.AddBinaryData("fileUpload", bytes, "screenShot.png", "image/png");
         Debug.Log(saveFile);
         form.AddField("model", saveFile);
