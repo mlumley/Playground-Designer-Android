@@ -46,6 +46,7 @@ public class PlayerManager : MonoBehaviour {
     bool rotateObject = false;
     bool hitUI = false;
     bool hitDelete = false;
+    bool hitSlider = false;
 
     Vector3 lastMousePos = new Vector3();
     Vector3 currentMousePos = new Vector3();
@@ -71,6 +72,7 @@ public class PlayerManager : MonoBehaviour {
             EventSystem.current.RaycastAll(cursor, objectsHit);
             hitUI = false;
             hitDelete = false;
+            hitSlider = false;
 
             foreach (RaycastResult result in objectsHit) {
                 Debug.Log(result.gameObject.name);
@@ -80,9 +82,12 @@ public class PlayerManager : MonoBehaviour {
                 if (result.gameObject.tag == "DeleteButton") {
                     hitDelete = true;
                 }
+                if(result.gameObject.tag == "ScaleSlider") {
+                    hitSlider = true;
+                }
             }
 
-            if (hit && !hitUI && !hitDelete) {
+            if (hit && !hitUI && !hitDelete && !hitSlider) {
                 if (currentObject) {
                     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                     RaycastHit groundHit = new RaycastHit();
@@ -162,7 +167,7 @@ public class PlayerManager : MonoBehaviour {
                     Debug.Log("Hit " + hitInfo.transform.gameObject.name);
                 }
             }
-            else if (!hitDelete) {
+            else if (!hitDelete && !hitSlider) {
                 Debug.Log("No hit");
                 SetSelectableToNull();
             }
@@ -411,7 +416,7 @@ public class PlayerManager : MonoBehaviour {
     }
 
     IEnumerator LoadObject(string objectName) {
-        yield return new WaitUntil(() => DataManager.modelBundles.Count == DataManager.names.Length);
+        //yield return new WaitUntil(() => DataManager.modelBundles.Count == DataManager.names.Length);
         // Load and retrieve the AssetBundle
         AssetBundle[] bundles = DataManager.modelBundles.ToArray();
         AssetBundle bundle = new AssetBundle();
@@ -548,6 +553,10 @@ public class PlayerManager : MonoBehaviour {
             //cameraAnchor.eulerAngles = new Vector3(cameraAnchor.eulerAngles.x, cameraAnchor.eulerAngles.y, 0);
             lastMousePos = currentMousePos;
         }
+    }
+
+    public void ScaleCurrentObject(float percent) {
+        currentObject.transform.localScale = new Vector3(percent, percent, percent);
     }
 
     public void SelectObject(GameObject obj) {

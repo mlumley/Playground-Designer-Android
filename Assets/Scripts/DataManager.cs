@@ -153,6 +153,8 @@ public class DataManager : MonoBehaviour {
 #if UNITY_EDITOR
         Debug.Log("WaitForEndOfFrame doesn't work in editor");
 #elif UNITY_WEBGL
+        yield return null;
+        GameObject.Find("Canvas").GetComponent<Canvas>().enabled = false;
         yield return new WaitForEndOfFrame();
 #endif
 
@@ -169,6 +171,8 @@ public class DataManager : MonoBehaviour {
 
         byte[] bytes = tex.EncodeToPNG();
         Destroy(tex);
+
+        GameObject.Find("Canvas").GetComponent<Canvas>().enabled = true;
 
         // Comment out for deploy
         //Debug.Log(Application.dataPath + "/SavedScreen.png");
@@ -262,10 +266,10 @@ public class DataManager : MonoBehaviour {
     IEnumerator DownloadAndCache(string bundleName) {
         // Load the AssetBundle file from Cache if it exists with the same version or download and store it in the cache
         //using (WWW www = WWW.LoadFromCacheOrDownload(BaseUrlOfApi + "wp-simulate/models", 1)) {
-        //Debug.Log("Started downloading " + bundleName);
+        Debug.Log("Started downloading " + bundleName);
         using (WWW www = new WWW(BaseUrlOfApi + "wp-simulate/AssetBundles/" + bundleName)) {
             yield return www;
-            //Debug.Log("Finished downloading " + bundleName);
+            Debug.Log("Finished downloading " + bundleName);
             if (www.error != null)
                 throw new Exception("WWW download had an error:" + www.error);
             modelBundles.Add(www.assetBundle);
