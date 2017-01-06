@@ -585,6 +585,8 @@ public class PlayerManager : MonoBehaviour {
 
     public void ScaleCurrentObject(float percent) {
         currentObject.transform.localScale = new Vector3(percent, percent, percent);
+        Vector3 scale = currentObject.GetComponent<BoxCollider>().size;
+        SelectorIndicator.Instance.selector.transform.localScale = new Vector3(scale.x * percent, 0.1f, scale.x * percent);
     }
 
     public void SelectObject(GameObject obj) {
@@ -593,10 +595,12 @@ public class PlayerManager : MonoBehaviour {
             SelectorIndicator.Instance.selector.SetActive(true);
             currentObject = obj.transform;
             SelectorIndicator.Instance.SetSelectedObject(currentObject.gameObject);
+            ObjectWorldPanel.Instance.SetTarget(currentObject);
         }
         else {
             currentObject = null;
             SelectorIndicator.Instance.SetSelectedObject(null);
+            ObjectWorldPanel.Instance.SetTarget(null);
         }
     }
 }
