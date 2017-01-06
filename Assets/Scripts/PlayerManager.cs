@@ -55,6 +55,8 @@ public class PlayerManager : MonoBehaviour {
 
     ClickManager clickManager = new ClickManager();
 
+    GameObject rotationSphere = null;
+
     void Update() {
 
 
@@ -89,7 +91,7 @@ public class PlayerManager : MonoBehaviour {
             }
 
             if (hit && !hitUI && !hitDelete && !hitSlider) {
-                if (currentObject) {
+                /*if (currentObject) {
                     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                     RaycastHit groundHit = new RaycastHit();
                     if (Physics.Raycast(ray, out groundHit, Mathf.Infinity, 1 << LayerMask.NameToLayer("GridCollider"))) {
@@ -98,6 +100,11 @@ public class PlayerManager : MonoBehaviour {
                             rotateObject = true;
                         }
                     }
+                }*/
+                if(hitInfo.transform.gameObject.tag == "RotateSphere") {
+                    Debug.Log("Hit rotation");
+                    rotateObject = true;
+                    rotationSphere = hitInfo.transform.gameObject;
                 }
                 if ((hitInfo.transform.gameObject.tag == "Models" || hitInfo.transform.gameObject.tag == "PhotoObject") && !rotateObject) {
                     Debug.Log(currentObject);
@@ -107,7 +114,7 @@ public class PlayerManager : MonoBehaviour {
                         currentObject = hitInfo.transform;
                         isObjSelected = true;
                         //moveMode = true;
-                        SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
+                        SelectObject(currentObject.gameObject);
                         ObjectWorldPanel.Instance.SetTarget(currentObject);
                     }
 
@@ -185,10 +192,27 @@ public class PlayerManager : MonoBehaviour {
                     RaycastHit hitInfo5;
                     if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo5, Mathf.Infinity, 1 << LayerMask.NameToLayer("GridCollider"))) {
                         float angle = SignedAngleBetween(RotateCircleHitPreviousPoint - currentObject.position, hitInfo5.point - currentObject.position, Vector3.up);
-                        RotateCirclesRenderer.Instance.SetDegrees(-angle);
+                        //RotateCirclesRenderer.Instance.SetDegrees(-angle);
+                        SelectorIndicator.Instance.RotateSelectedObject(-angle);
                         RotateCircleHitPreviousPoint = hitInfo5.point;
                     }
                 }
+
+                /*Debug.Log("In rotate");
+
+                RaycastHit hit;
+                if(Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, 1 << LayerMask.NameToLayer("GridCollider"))) {
+                    float sphereDistance = Vector3.Distance(currentObject.position, rotationSphere.transform.position);
+                    float mouseDistance = Vector3.Distance(currentObject.position, hit.point);
+                    float ratio = sphereDistance / mouseDistance;
+                    float angle = Mathf.Acos(ratio);
+
+                    Debug.Log("Angle " + Mathf.Rad2Deg * angle);
+                    SelectorIndicator.Instance.RotateSelectedObject(Mathf.Rad2Deg * angle);
+
+                    Debug.Log("Angle " + Vector3.Angle(rotationSphere.transform.position, hit.point));
+                    SelectorIndicator.Instance.RotateSelectedObject(Vector3.Angle(rotationSphere.transform.position, hit.point));
+                }*/
             }
             else if (Input.GetMouseButton(0) && moveMode) {
                 //Debug.Log("Move Mode");
@@ -448,7 +472,7 @@ public class PlayerManager : MonoBehaviour {
         newObject.tag = "Models";
         currentObject = newObject.transform;
         moveMode = true;
-        SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
+        SelectObject(currentObject.gameObject);
     }
 
     private void CalculateLocalBounds(GameObject newObject) {
@@ -521,7 +545,7 @@ public class PlayerManager : MonoBehaviour {
 
         MoveableUISelected = !hasHitUI;
         ObjectWorldPanel.Instance.SetTarget(null);
-        SelectedObjectCircleRenderer.Instance.SetSelectedObject(null);
+        SelectObject(null);
     }
 
 
@@ -563,7 +587,14 @@ public class PlayerManager : MonoBehaviour {
 
     public void SelectObject(GameObject obj) {
         isObjSelected = true;
-        currentObject = obj.transform;
-        SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
+        if (obj) {
+            SelectorIndicator.Instance.selector.SetActive(true);
+            currentObject = obj.transform;
+            SelectorIndicator.Instance.SetSelectedObject(currentObject.gameObject);
+        }
+        else {
+            currentObject = null;
+            SelectorIndicator.Instance.SetSelectedObject(null);
+        }
     }
 }
