@@ -15,9 +15,9 @@ public class ObjectSelectionButton : MonoBehaviour {
 	void Start ()
 	{
 		thisButton = GetComponent<Button> ();
-		thisButton.onClick.AddListener (SelectThisObject);
-		InfoButton.onClick.AddListener (PressedInfoButton);
-	}
+        //thisButton.onClick.AddListener (SelectThisObject);
+        //InfoButton.onClick.AddListener (PressedInfoButton);
+    }
 
 	public void PopulateButtonData (DesignInfo info)
 	{

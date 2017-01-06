@@ -84,6 +84,7 @@ public class PlayerManager : MonoBehaviour {
                 }
                 if(result.gameObject.tag == "ScaleSlider") {
                     hitSlider = true;
+                    moveMode = false;
                 }
             }
 
@@ -408,7 +409,7 @@ public class PlayerManager : MonoBehaviour {
         currentObject = newObject.transform;
 
         SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);*/
-
+        SetSelectableToNull();
         isObjSelected = true;
         //moveMode = true;
 
@@ -436,7 +437,7 @@ public class PlayerManager : MonoBehaviour {
 
         // Get the reference to the loaded object
         GameObject newObject = Instantiate(request.asset) as GameObject;
-        newObject.transform.position = Vector3.zero;
+        newObject.transform.position = new Vector3(0, -100, 0);
         newObject.AddComponent<BoxCollider>();
         //newObject.GetComponent<BoxCollider>().center = Vector3.zero;
         //newObject.GetComponent<BoxCollider>().size = new Vector3(10, 10, 10);
@@ -446,6 +447,7 @@ public class PlayerManager : MonoBehaviour {
         newObject.layer = LayerMask.NameToLayer("DesignObject");
         newObject.tag = "Models";
         currentObject = newObject.transform;
+        moveMode = true;
         SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
     }
 

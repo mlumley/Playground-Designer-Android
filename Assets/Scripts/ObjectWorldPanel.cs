@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class ObjectWorldPanel : MonoBehaviour {
 
@@ -32,6 +33,7 @@ public class ObjectWorldPanel : MonoBehaviour {
             DeleteButton.SetActive(true);
             if(target.gameObject.tag == "PhotoObject") {
                 Slider.SetActive(true);
+                Slider.GetComponent<Slider>().value = target.localScale.x;
             }
         }
         else {
