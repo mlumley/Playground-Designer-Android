@@ -9,13 +9,4 @@ public class ModelSelect : MonoBehaviour, IPointerDownHandler {
         gameObject.GetComponent<ObjectSelectionButton>().SelectThisObject();
     }
 
-    // Use this for initialization
-    void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }
