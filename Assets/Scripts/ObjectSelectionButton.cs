@@ -31,7 +31,8 @@ public class ObjectSelectionButton : MonoBehaviour {
 	{
         Debug.Log(ObjectInfo.ModelName);
 		PlayerManager.Instance.SetObject (ObjectInfo.ModelName);
-		UIManager.Instance.DismissDesignPanel ();
+		//UIManager.Instance.DismissDesignPanel ();
+
 	}
 
 	public void PressedInfoButton ()

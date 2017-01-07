@@ -52,8 +52,9 @@ public class DataManager : MonoBehaviour {
 
         Debug.Log("Initial userId: " + userId + ", savedPlaygroundId: " + savedPlaygroundId);
 
-        string[] names1 = { "balance", "bridges", "buildings", "climbing", "cubbies", "fireman", "furniture", "ground_cover", "hills", "imaginative", "ladders", "monkey_bars", "musical", "natural", "other", "rocks_logs", "sandpits", "seesaw", "slides", "sports", "swings", "trees", "tunnel" };
+        string[] names1 = { "balance", "bridges", "buildings", "climbing", "cubbies", "furniture", "ground_cover", "hills", "imaginative", "ladders", "monkey_bars", "musical", "natural", "other", "poles", "rocks", "sandpits", "seesaws", "slides", "sports", "swings", "trees", "tunnels" };
         names = names1;
+
 
         foreach (string name in names) {
             StartCoroutine(DownloadAndCache(name));
