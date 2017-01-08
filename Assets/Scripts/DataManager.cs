@@ -277,6 +277,7 @@ public class DataManager : MonoBehaviour {
         }
     }
 
+    // Not in use
     IEnumerator Download(string bundleName) {
         // Load the AssetBundle file from Cache if it exists with the same version or download and store it in the cache
         //using (WWW www = WWW.LoadFromCacheOrDownload(BaseUrlOfApi + "wp-simulate/models", 1)) {
@@ -293,7 +294,7 @@ public class DataManager : MonoBehaviour {
     IEnumerator DownloadAndCache(string bundleName) {
         while (!Caching.ready)
             yield return null;
-
+        // Increment version number with new assest bundles
         var www = WWW.LoadFromCacheOrDownload(BaseUrlOfApi + "wp-simulate/AssetBundles/" + bundleName, 2);
         yield return www;
         if (!string.IsNullOrEmpty(www.error)) {

@@ -77,7 +77,7 @@ public class PlayerManager : MonoBehaviour {
             hitSlider = false;
 
             foreach (RaycastResult result in objectsHit) {
-                Debug.Log(result.gameObject.name);
+                Debug.Log("UI raycaster hit " + result.gameObject.name);
                 if (result.gameObject.layer == LayerMask.NameToLayer("UI")) {
                     hitUI = true;
                 }
@@ -187,7 +187,7 @@ public class PlayerManager : MonoBehaviour {
                 SetSelectableToNull();
             }
             else if (Input.GetMouseButton(0) && rotateObject) {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                /*Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit groundHit = new RaycastHit();
                 if (Physics.Raycast(ray, out groundHit, Mathf.Infinity, 1 << LayerMask.NameToLayer("GridCollider"))) {
                     RaycastHit hitInfo5;
@@ -197,23 +197,14 @@ public class PlayerManager : MonoBehaviour {
                         SelectorIndicator.Instance.RotateSelectedObject(-angle);
                         RotateCircleHitPreviousPoint = hitInfo5.point;
                     }
-                }
+                }*/
 
-                /*Debug.Log("In rotate");
+                //Debug.Log("In rotate");
 
                 RaycastHit hit;
-                if(Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, 1 << LayerMask.NameToLayer("GridCollider"))) {
-                    float sphereDistance = Vector3.Distance(currentObject.position, rotationSphere.transform.position);
-                    float mouseDistance = Vector3.Distance(currentObject.position, hit.point);
-                    float ratio = sphereDistance / mouseDistance;
-                    float angle = Mathf.Acos(ratio);
-
-                    Debug.Log("Angle " + Mathf.Rad2Deg * angle);
-                    SelectorIndicator.Instance.RotateSelectedObject(Mathf.Rad2Deg * angle);
-
-                    Debug.Log("Angle " + Vector3.Angle(rotationSphere.transform.position, hit.point));
-                    SelectorIndicator.Instance.RotateSelectedObject(Vector3.Angle(rotationSphere.transform.position, hit.point));
-                }*/
+                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, 1 << LayerMask.NameToLayer("GridCollider"))) {
+                    SelectorIndicator.Instance.RotateSelectedObject(hit.point, rotationSphere);
+                }
             }
             else if (Input.GetMouseButton(0) && moveMode) {
                 //Debug.Log("Move Mode");
