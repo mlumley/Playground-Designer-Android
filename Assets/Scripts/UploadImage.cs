@@ -45,7 +45,7 @@ public class UploadImage : MonoBehaviour {
         GameObject photoObject = Instantiate(Resources.Load("UIPrefabs/PhotoWorldObject")) as GameObject;
         photoObject.transform.position = Vector3.zero;
         photoObject.GetComponent<SpriteRenderer>().sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0f));
-        photoObject.GetComponent<SpriteRenderer>().sortingOrder = 10;
+        //photoObject.GetComponent<SpriteRenderer>().sortingOrder = 10;
         photoObject.GetComponent<BoxCollider>().center = photoObject.GetComponent<SpriteRenderer>().sprite.bounds.center;
         photoObject.GetComponent<BoxCollider>().size = photoObject.GetComponent<SpriteRenderer>().sprite.bounds.size;
         PlayerManager.Instance.SelectObject(photoObject);
