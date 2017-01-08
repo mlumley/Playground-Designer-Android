@@ -57,6 +57,7 @@ public class DataManager : MonoBehaviour {
 
 
         foreach (string name in names) {
+            //StartCoroutine(Download(name));
             StartCoroutine(DownloadAndCache(name));
         }
 
@@ -276,7 +277,7 @@ public class DataManager : MonoBehaviour {
         }
     }
 
-    IEnumerator DownloadAndCache(string bundleName) {
+    IEnumerator Download(string bundleName) {
         // Load the AssetBundle file from Cache if it exists with the same version or download and store it in the cache
         //using (WWW www = WWW.LoadFromCacheOrDownload(BaseUrlOfApi + "wp-simulate/models", 1)) {
         Debug.Log("Started downloading " + bundleName);
@@ -287,5 +288,18 @@ public class DataManager : MonoBehaviour {
                 throw new Exception("WWW download had an error:" + www.error);
             modelBundles.Add(www.assetBundle);
         }
+    }
+
+    IEnumerator DownloadAndCache(string bundleName) {
+        while (!Caching.ready)
+            yield return null;
+
+        var www = WWW.LoadFromCacheOrDownload(BaseUrlOfApi + "wp-simulate/AssetBundles/" + bundleName, 2);
+        yield return www;
+        if (!string.IsNullOrEmpty(www.error)) {
+            Debug.Log(www.error);
+            yield return null;
+        }
+        modelBundles.Add(www.assetBundle);
     }
 }
