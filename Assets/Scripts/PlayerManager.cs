@@ -433,20 +433,20 @@ public class PlayerManager : MonoBehaviour {
     }
 
     IEnumerator LoadObject(DesignInfo objectInfo) {
-        //yield return new WaitUntil(() => DataManager.modelBundles.Count == DataManager.names.Length);
+        yield return new WaitUntil(() => DataManager.modelBundles.Count == DataManager.names.Length);
         // Load and retrieve the AssetBundle
         AssetBundle[] bundles = DataManager.modelBundles.ToArray();
         AssetBundle bundle = new AssetBundle();
 
         for (int i = 0; i < bundles.Length; i++) {
-            if (bundles[i].Contains(objectInfo.Name)) {
+            if (bundles[i].Contains(objectInfo.ModelName)) {
                 bundle = bundles[i];
                 break;
             }
         }
 
         // Load the object asynchronously
-        AssetBundleRequest request = bundle.LoadAssetAsync(objectInfo.Name, typeof(GameObject));
+        AssetBundleRequest request = bundle.LoadAssetAsync(objectInfo.ModelName, typeof(GameObject));
 
         // Wait for completion
         yield return request;
