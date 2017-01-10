@@ -410,7 +410,7 @@ public class PlayerManager : MonoBehaviour {
         return signed_angle;
     }
 
-    public void SetObject(string objectName) {
+    public void SetObject(DesignInfo objectInfo) {
         /*Debug.Log("Made Object");
 		GameObject newObject = Instantiate(Resources.Load ("ModelPrefabs/" + objectName)) as GameObject;
 		newObject.transform.position = Vector3.zero;
@@ -429,24 +429,24 @@ public class PlayerManager : MonoBehaviour {
         isObjSelected = true;
         //moveMode = true;
 
-        StartCoroutine(LoadObject(objectName));
+        StartCoroutine(LoadObject(objectInfo));
     }
 
-    IEnumerator LoadObject(string objectName) {
+    IEnumerator LoadObject(DesignInfo objectInfo) {
         //yield return new WaitUntil(() => DataManager.modelBundles.Count == DataManager.names.Length);
         // Load and retrieve the AssetBundle
         AssetBundle[] bundles = DataManager.modelBundles.ToArray();
         AssetBundle bundle = new AssetBundle();
 
         for (int i = 0; i < bundles.Length; i++) {
-            if (bundles[i].Contains(objectName)) {
+            if (bundles[i].Contains(objectInfo.Name)) {
                 bundle = bundles[i];
                 break;
             }
         }
 
         // Load the object asynchronously
-        AssetBundleRequest request = bundle.LoadAssetAsync(objectName, typeof(GameObject));
+        AssetBundleRequest request = bundle.LoadAssetAsync(objectInfo.Name, typeof(GameObject));
 
         // Wait for completion
         yield return request;
@@ -459,7 +459,8 @@ public class PlayerManager : MonoBehaviour {
         //newObject.GetComponent<BoxCollider>().size = new Vector3(10, 10, 10);
         CalculateLocalBounds(newObject);
         newObject.GetComponent<BoxCollider>().isTrigger = true;
-        newObject.AddComponent<SelectedObjectCollision>();
+        newObject.AddComponent<ObjectInfo>();
+        newObject.GetComponent<ObjectInfo>().info = objectInfo;
         newObject.layer = LayerMask.NameToLayer("DesignObject");
         newObject.tag = "Models";
         currentObject = newObject.transform;

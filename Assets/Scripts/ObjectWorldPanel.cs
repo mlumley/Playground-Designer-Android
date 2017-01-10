@@ -31,7 +31,7 @@ public class ObjectWorldPanel : MonoBehaviour {
 
         if (target) {
             DeleteButton.SetActive(true);
-            if(target.gameObject.tag == "PhotoObject") {
+            if(target.gameObject.tag == "PhotoObject" || target.gameObject.GetComponent<ObjectInfo>().info.MainCategory == "Landscape") {
                 Slider.SetActive(true);
                 Slider.GetComponent<Slider>().value = target.localScale.x;
             }

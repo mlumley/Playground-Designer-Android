@@ -30,7 +30,7 @@ public class ObjectSelectionButton : MonoBehaviour {
 	public void SelectThisObject ()
 	{
         Debug.Log(ObjectInfo.ModelName);
-		PlayerManager.Instance.SetObject (ObjectInfo.ModelName);
+		PlayerManager.Instance.SetObject (ObjectInfo);
 		//UIManager.Instance.DismissDesignPanel ();
 
 	}

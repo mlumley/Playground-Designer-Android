@@ -66,6 +66,7 @@ public class CameraPositions : MonoBehaviour {
     void Start() {
         //transform.position = new Vector3(0f,14f,-16f);
         transform.LookAt(cameraAnchor);
+        transform.localPosition = new Vector3(0, 0, -ground.transform.localScale.z * 10 / 2 - 40);
     }
 
     void Rotating() {
