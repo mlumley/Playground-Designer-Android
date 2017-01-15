@@ -40,6 +40,8 @@ public class DataManager : MonoBehaviour {
 
     private bool preexitingPlayground = false;
 
+    public GameObject infoScreen;
+
 
     void Start() {
         StartCoroutine(LoadData());
@@ -87,6 +89,15 @@ public class DataManager : MonoBehaviour {
             preexitingPlayground = true;
             StartCoroutine(LoadSavedPlayground(savedPlaygroundId));
         }
+        else {
+            StartCoroutine(WaitTillDownloadedAssets());
+        }
+    }
+
+    IEnumerator WaitTillDownloadedAssets() {
+        yield return new WaitUntil(() => modelBundles.Count == names.Length);
+        infoScreen.SetActive(true);
+        infoScreen.GetComponentInChildren<Button>().interactable = true;
     }
 
 

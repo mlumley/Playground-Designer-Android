@@ -433,7 +433,7 @@ public class PlayerManager : MonoBehaviour {
     }
 
     IEnumerator LoadObject(DesignInfo objectInfo) {
-        yield return new WaitUntil(() => DataManager.modelBundles.Count == DataManager.names.Length);
+        //yield return new WaitUntil(() => DataManager.modelBundles.Count == DataManager.names.Length);
         // Load and retrieve the AssetBundle
         AssetBundle[] bundles = DataManager.modelBundles.ToArray();
         AssetBundle bundle = new AssetBundle();

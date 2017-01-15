@@ -1,13 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Runtime.InteropServices;
+using System.IO;
+using System;
 
 public class UploadImage : MonoBehaviour {
 
-    public GameObject MainCanvas;
-
     [DllImport("__Internal")]
     private static extern void ImageUploaderCaptureClick();
+
+    [DllImport("__Internal")]
+    private static extern void ImageDownloaderCaptureClick(string imageName, string bytes);
+
+    byte[] bytes;
 
     IEnumerator LoadTexture(string url) {
         WWW image = new WWW(url);
@@ -49,5 +54,42 @@ public class UploadImage : MonoBehaviour {
         photoObject.GetComponent<BoxCollider>().center = photoObject.GetComponent<SpriteRenderer>().sprite.bounds.center;
         photoObject.GetComponent<BoxCollider>().size = photoObject.GetComponent<SpriteRenderer>().sprite.bounds.size;
         PlayerManager.Instance.SelectObject(photoObject);
+    }
+
+
+    public void DownloadImage() {
+        StartCoroutine(TakeImage());
+
+
+    }
+
+    IEnumerator TakeImage() {
+        yield return null;
+#if UNITY_EDITOR
+        Debug.Log("WaitForEndOfFrame doesn't work in editor");
+#elif UNITY_WEBGL
+        
+        GameObject.Find("Canvas").GetComponent<Canvas>().enabled = false;
+        yield return new WaitForEndOfFrame();
+#endif
+        int width = Screen.width;
+        int height = Screen.height;
+        Texture2D tex = new Texture2D(width, height, TextureFormat.RGB24, false);
+
+        tex.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+        tex.Apply();
+
+        bytes = tex.EncodeToPNG();
+        Destroy(tex);
+        string bytestring = Convert.ToBase64String(bytes);
+
+
+        GameObject.Find("Canvas").GetComponent<Canvas>().enabled = true;
+#if UNITY_EDITOR
+        File.WriteAllBytes(Application.dataPath + "/SavedScreen.png", bytes);
+#elif UNITY_WEBGL
+
+        ImageDownloaderCaptureClick("SavedScreen", bytestring);
+#endif
     }
 }
