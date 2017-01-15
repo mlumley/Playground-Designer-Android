@@ -38,7 +38,7 @@ public class DataManager : MonoBehaviour {
     public static List<AssetBundle> modelBundles = new List<AssetBundle>();
     public static string[] names;
 
-    private bool preexitingPlayground = false;
+    private bool preexistingPlayground = false;
 
     public GameObject infoScreen;
 
@@ -86,18 +86,29 @@ public class DataManager : MonoBehaviour {
         //StartCoroutine(LoadUser(userId));
         if (savedPlaygroundId != 0) {
             Debug.Log("Loading saved playground");
-            preexitingPlayground = true;
+            preexistingPlayground = true;
+            StartCoroutine(WaitTillDownloadedAssets(preexistingPlayground));
             StartCoroutine(LoadSavedPlayground(savedPlaygroundId));
         }
         else {
-            StartCoroutine(WaitTillDownloadedAssets());
+            StartCoroutine(WaitTillDownloadedAssets(preexistingPlayground));
         }
     }
 
-    IEnumerator WaitTillDownloadedAssets() {
+    IEnumerator WaitTillDownloadedAssets(bool isExsitingPlayground) {
+        Button okButton = infoScreen.GetComponentInChildren<Button>();
+
+        if (isExsitingPlayground) {
+            okButton.GetComponentInChildren<Text>().text = "Loading your Playground";
+        }
+        else {
+            okButton.GetComponentInChildren<Text>().text = "Loading Models";
+        }
+
         yield return new WaitUntil(() => modelBundles.Count == names.Length);
         infoScreen.SetActive(true);
-        infoScreen.GetComponentInChildren<Button>().interactable = true;
+        okButton.interactable = true;
+        okButton.GetComponentInChildren<Text>().text = "Ready!";
     }
 
 
@@ -200,12 +211,12 @@ public class DataManager : MonoBehaviour {
         WWWForm form = new WWWForm();
         form.AddField("userId", UserId);
         form.AddField("name", name);
-        if (preexitingPlayground) {
+        if (preexistingPlayground) {
             Debug.Log("DesignID " + DesignId);
             form.AddField("designId", DesignId);
         }
         else {
-            preexitingPlayground = true;
+            preexistingPlayground = true;
         }
         //form.AddBinaryData("fileUpload", bytes, "screenShot.png", "image/png");
         Debug.Log(saveFile);

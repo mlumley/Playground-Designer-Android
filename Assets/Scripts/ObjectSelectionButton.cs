@@ -4,9 +4,7 @@ using System.Collections;
 
 public class ObjectSelectionButton : MonoBehaviour {
 
-	Button thisButton;
-
-	public Button InfoButton;
+	public Image ColourBar;
 	public Image ThisImage;
 
 	public DesignInfo ObjectInfo;
@@ -14,9 +12,12 @@ public class ObjectSelectionButton : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
-		thisButton = GetComponent<Button> ();
-        //thisButton.onClick.AddListener (SelectThisObject);
-        //InfoButton.onClick.AddListener (PressedInfoButton);
+        if(ObjectInfo.MainCategory == "Elements") {
+            ColourBar.color = new Color32(223, 40, 125,255);
+        }
+        else {
+            ColourBar.color = new Color32(238, 163, 75,255);
+        }
     }
 
 	public void PopulateButtonData (DesignInfo info)

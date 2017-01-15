@@ -1,10 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class InfoScreenController : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-        gameObject.SetActive(true);
-	}
+    public Button okButton;
+    private string buttonText;
+
+    void Start() {
+        buttonText = okButton.GetComponentInChildren<Text>().text;
+        Debug.Log(buttonText);
+    }
+
+    public void ResetText() {
+        okButton.GetComponentInChildren<Text>().text = buttonText;
+    }
 }
