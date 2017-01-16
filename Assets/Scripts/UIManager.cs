@@ -93,4 +93,8 @@ public class UIManager : MonoBehaviour {
     }
 
     #endregion
+
+    public void ToggleFullScreen() {
+        Screen.fullScreen = !Screen.fullScreen;
+    }
 }
