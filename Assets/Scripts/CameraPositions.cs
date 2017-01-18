@@ -62,6 +62,15 @@ public class CameraPositions : MonoBehaviour {
     // Ground
     public GameObject ground;
 
+    public bool IsZooming {
+        get {
+            return isZooming;
+        }
+        set {
+            isZooming = value;
+        }
+    }
+
 
     void Start() {
         //transform.position = new Vector3(0f,14f,-16f);
@@ -180,20 +189,19 @@ public class CameraPositions : MonoBehaviour {
 
 
         if (Input.GetKey(KeyCode.UpArrow) && isFP == false) {
+            isZooming = true;
             ZoomIn();
+            isZooming = false;
         }
 
         if (Input.GetKey(KeyCode.DownArrow) && isFP == false) {
+            isZooming = true;
             ZoomOut();
+            isZooming = false;
         }
 
 
-        if (Input.GetMouseButtonDown(0) && isFP == false) {
-            mousePosition = Input.mousePosition;
-            // Needs to be enabled only when the mouse doesn't hit the ui
-            //if ((Input.mousePosition.y >= (Screen.height / 285 * 100)) && (Input.mousePosition.y <= (Screen.height / 285 * 266))) {
-            //if (!(Input.mousePosition.x / Screen.width >= 48/35 ))
-
+        if (Input.GetAxis("Mouse ScrollWheel") != 0 && isFP == false) {
             // Check if we hit the UI
             PointerEventData cursor = new PointerEventData(EventSystem.current);
             cursor.position = Input.mousePosition;
@@ -209,10 +217,17 @@ public class CameraPositions : MonoBehaviour {
             }
 
             //Debug.Log(PlayerManager.Instance.hitUI);
-            if (PlayerManager.Instance.isObjSelected == false && !hitUI) {
-
-                isRotating = true;
-
+            if (!hitUI) {
+                if(Input.GetAxis("Mouse ScrollWheel") > 0) {
+                    isZooming = true;
+                    ZoomIn(5);
+                    isZooming = false;
+                }
+                else {
+                    isZooming = true;
+                    ZoomOut(5);
+                    isZooming = false;
+                }
             }
 
             //}
@@ -309,17 +324,21 @@ public class CameraPositions : MonoBehaviour {
         transform.localRotation = Quaternion.identity;
     }
 
-    public void ZoomIn() {
-        zoomSpeed = 4;
-        cameraMove = zoomSpeed * 0.25f * transform.forward;
-        if(transform.localPosition.z + cameraMove.z < -5)
-            transform.Translate(cameraMove, Space.World);
+    public void ZoomIn(int zoomSpeed = 2) {
+        if (isZooming) {
+            //zoomSpeed = 2;
+            cameraMove = zoomSpeed * 0.25f * transform.forward;
+            if (transform.localPosition.z + cameraMove.z < -5)
+                transform.Translate(cameraMove, Space.World);
+        }
     }
 
-    public void ZoomOut() {
-        zoomSpeed = -4;
-        cameraMove = zoomSpeed * 0.25f * transform.forward;
-        transform.Translate(cameraMove, Space.World);
+    public void ZoomOut(int zoomSpeed = 2) {
+        if (isZooming) {
+            //zoomSpeed = -2;
+            cameraMove = -zoomSpeed * 0.25f * transform.forward;
+            transform.Translate(cameraMove, Space.World);
+        }
     }
 
 }

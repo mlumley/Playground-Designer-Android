@@ -41,11 +41,11 @@ public class SelectorIndicator : MonoBehaviour {
             selector.transform.position = selectedObject.transform.position;
             selector.transform.rotation = selectedObject.transform.rotation;
 
-            foreach(Transform sphere in selector.transform.GetComponentsInChildren<Transform>()) {
+            /*foreach(Transform sphere in selector.transform.GetComponentsInChildren<Transform>()) {
                 if (sphere.GetComponent<SphereCollider>()) {
                     sphere.localScale = new Vector3(0.3f, diameter * 0.3f, 0.3f); ;
                 }
-            }
+            }*/
         }
         else {
             selector.SetActive(false);
