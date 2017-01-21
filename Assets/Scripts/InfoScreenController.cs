@@ -9,7 +9,7 @@ public class InfoScreenController : MonoBehaviour {
 
     void Start() {
         buttonText = okButton.GetComponentInChildren<Text>().text;
-        Debug.Log(buttonText);
+        //Debug.Log(buttonText);
     }
 
     public void ResetText() {

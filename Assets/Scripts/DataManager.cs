@@ -316,7 +316,7 @@ public class DataManager : MonoBehaviour {
     IEnumerator DownloadAndCache(string bundleName) {
         while (!Caching.ready)
             yield return null;
-        Debug.Log("Started downloading " + bundleName);
+        //Debug.Log("Started downloading " + bundleName);
         // Increment version number with new assest bundles
         var www = WWW.LoadFromCacheOrDownload(BaseUrlOfApi + "wp-simulate/AssetBundles/" + bundleName, 3);
         yield return www;
@@ -324,7 +324,7 @@ public class DataManager : MonoBehaviour {
             Debug.Log(www.error);
             yield return null;
         }
-        Debug.Log("Finished downloading " + bundleName);
+        //Debug.Log("Finished downloading " + bundleName);
         modelBundles.Add(www.assetBundle);
     }
 }

@@ -52,21 +52,21 @@ public class TooltipController : MonoBehaviour {
         yield return new WaitForEndOfFrame();
         float offsetX = 0;
         float offsetY = 0;
-        Debug.Log("Width: " + width);
+        //Debug.Log("Width: " + width);
         //Debug.Log("Height: " + height);
         Vector2 point;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(gameObject.GetComponent<RectTransform>(), Input.mousePosition, null, out point);
-        Debug.Log("PosX: " + point);
-        Debug.Log("WidthBox: " + tooltip.GetComponent<RectTransform>().rect.width);
+        //Debug.Log("PosX: " + point);
+        //Debug.Log("WidthBox: " + tooltip.GetComponent<RectTransform>().rect.width);
         if (point.x + tooltip.GetComponent<RectTransform>().rect.width > width) {
             offsetX = point.x + tooltip.GetComponent<RectTransform>().rect.width - width;
-            Debug.Log("OffsetX: " + offsetX);
+            //Debug.Log("OffsetX: " + offsetX);
         }
         if (point.y + tooltip.GetComponent<RectTransform>().rect.height < height) {
             offsetY = point.y + tooltip.GetComponent<RectTransform>().rect.height - height;
             //Debug.Log("OffsetY: " + offsetY);
         }
         screenOffset = new Vector3(point.x - offsetX, point.y - offsetY, 0);
-        Debug.Log("screenOffset: " + screenOffset);
+        //Debug.Log("screenOffset: " + screenOffset);
     }
 }

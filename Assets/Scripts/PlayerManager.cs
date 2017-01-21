@@ -77,7 +77,7 @@ public class PlayerManager : MonoBehaviour {
             hitSlider = false;
 
             foreach (RaycastResult result in objectsHit) {
-                Debug.Log("UI raycaster hit " + result.gameObject.name);
+                //Debug.Log("UI raycaster hit " + result.gameObject.name);
                 if (result.gameObject.layer == LayerMask.NameToLayer("UI")) {
                     hitUI = true;
                 }
