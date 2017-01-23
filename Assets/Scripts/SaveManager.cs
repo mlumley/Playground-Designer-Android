@@ -12,13 +12,15 @@ namespace Assets.Scripts {
         public InputField fileName;
         public GameObject saveText;
 
-        public void SavePlayground() {
+        public void SavePlayground(bool withAnimation = true) {
             SaveFile save = MakeSaveFile();
             string saveJSON = JsonUtility.ToJson(save);
             //Debug.Log(saveJSON);
             StartCoroutine(DataManager.Instance.SavePlayground(fileName.text, saveJSON));
-            saveText.SetActive(true);
-            saveText.GetComponent<Animation>().Play();
+            if (withAnimation) {
+                saveText.SetActive(true);
+                saveText.GetComponent<Animation>().Play();
+            }
         }
 
         public SaveFile MakeSaveFile() {

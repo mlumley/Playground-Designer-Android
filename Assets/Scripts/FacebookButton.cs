@@ -5,6 +5,7 @@ using Facebook.Unity;
 using System.Collections.Generic;
 using System;
 using UnityEngine.UI;
+using Assets.Scripts;
 
 public class FacebookButton : MonoBehaviour {
 
@@ -16,10 +17,22 @@ public class FacebookButton : MonoBehaviour {
     private List<string> perms = new List<string>() { "public_profile", "publish_actions" };
     private byte[] bytes;
 
-    public void UploadImageToFacebook() {
-        FB.LogInWithReadPermissions(perms, AuthCallback);
-        StartCoroutine(TakeImage());
+    public SaveManager save;
 
+    public void UploadImageToFacebook() {
+        //FB.LogInWithReadPermissions(perms, AuthCallback);
+        //StartCoroutine(TakeImage());
+        if(!DataManager.Instance.isSaving)
+            save.SavePlayground(false);
+        //StartCoroutine(DataManager.Instance.GetScreenShotURL());
+        //FB.ShareLink(new Uri("http://playgroundideas.endzone.io/app-api/wp-simulate/Build/app.php"), "Playground Ideas", "Create your own playground", new Uri(DataManager.Instance.ScreenShotURL), ShareCallback);
+        StartCoroutine(Post());
+    }
+
+    IEnumerator Post() {
+        yield return new WaitUntil(() => DataManager.Instance.isSaving == false);
+        Debug.Log("FB called");
+        FB.ShareLink(new Uri("http://playgroundideas.endzone.io/app-api/wp-simulate/Build/app.php"), "Playground Ideas", "Create your own playground", new Uri(DataManager.Instance.ScreenShotURL), ShareCallback);
     }
 
     public void PostToFacebook() {
@@ -31,6 +44,20 @@ public class FacebookButton : MonoBehaviour {
         FB.API("me/photos", HttpMethod.POST, APICallback, wwwForm);
         caption.text = "";
         postPanel.SetActive(false);
+    }
+
+    private void ShareCallback(IShareResult result) {
+        if (result.Cancelled || !String.IsNullOrEmpty(result.Error)) {
+            Debug.Log("ShareLink Error: " + result.Error);
+        }
+        else if (!String.IsNullOrEmpty(result.PostId)) {
+            // Print post identifier of the shared content
+            Debug.Log(result.PostId);
+        }
+        else {
+            // Share succeeded without postID
+            Debug.Log("ShareLink success!");
+        }
     }
 
 

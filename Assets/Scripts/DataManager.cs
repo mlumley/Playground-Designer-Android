@@ -42,6 +42,15 @@ public class DataManager : MonoBehaviour {
 
     public GameObject infoScreen;
 
+    private string screenShotURL;
+    public bool isSaving = false;
+
+    public string ScreenShotURL {
+        get {
+            return screenShotURL;
+        }
+    }
+
 
     void Start() {
         StartCoroutine(LoadData());
@@ -111,6 +120,30 @@ public class DataManager : MonoBehaviour {
         okButton.GetComponentInChildren<Text>().text = "Ready!";
     }
 
+    public IEnumerator GetScreenShotURL() {
+        yield return new WaitUntil(() => isSaving == false);
+        string jsonUrl = BaseUrlOfApi + "/playgrounds/get.php?userId=" + UserId;
+        string json = "";
+
+        WWW www = new WWW(jsonUrl);
+        yield return www;
+
+        if (!string.IsNullOrEmpty(www.error)) {
+            Debug.LogError("LoadUser API call error (" + jsonUrl + "): " + www.error);
+            yield break;
+        }
+
+        json = www.text;
+
+        JSONNode N = JSON.Parse(json);
+        Debug.Log("Full Json returned from API: " + json);
+
+        
+
+        yield return "http://playgroundideas.endzone.io/app-api/uploads/" + N["screenShot"];
+        Debug.Log("ScreenshotURL is " + DataManager.Instance.ScreenShotURL);
+    }
+
 
     IEnumerator LoadSavedPlayground(int savedPlaygroundId) {
         string jsonUrl = BaseUrlOfApi + "/playgrounds/get.php?id=" + savedPlaygroundId;
@@ -178,7 +211,7 @@ public class DataManager : MonoBehaviour {
 
 
     public IEnumerator SavePlayground(string name, string saveFile) {
-
+        isSaving = true;
 #if UNITY_EDITOR
         Debug.Log("WaitForEndOfFrame doesn't work in editor");
 #elif UNITY_WEBGL
@@ -234,13 +267,21 @@ public class DataManager : MonoBehaviour {
         }
 
         json = www.text;
+        Debug.Log(json);
 
         JSONNode N = JSON.Parse(json);
+
+        DesignId = N["playground"]["id"];
+        screenShotURL = N["playground"]["screenshot_Url"];
+        Debug.Log("ScreenshotURL is " + DataManager.Instance.ScreenShotURL);
+
 
         if (N["status"].Value != "true") {
             Debug.LogError("Error with saving.");
             yield break;
         }
+        isSaving = false;
+        Debug.Log(isSaving);
     }
 
 
