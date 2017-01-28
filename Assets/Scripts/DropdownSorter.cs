@@ -7,6 +7,7 @@ public class DropdownSorter : MonoBehaviour {
 
     public Dropdown dropdownMenu;
     private List<string> categories;
+    public GameObject panels;
 
     public void setCatagories(List<string> categories) {
         this.categories = categories;
@@ -20,11 +21,15 @@ public class DropdownSorter : MonoBehaviour {
         int index = dropdownMenu.value;
         Dropdown.OptionData item = dropdownMenu.options[index];
         UIManager.Instance.SetObjectData(DataManager.objectInfoList, "Elements", item.text);
+        if(panels.GetComponent<ModelPanelController>().IsHid)
+            panels.GetComponent<ModelPanelController>().ShowHidePanel(0);
     }
 
     public void updateLandscapeDropdown() {
         int index = dropdownMenu.value;
         Dropdown.OptionData item = dropdownMenu.options[index];
         UIManager.Instance.SetLandscapeData(DataManager.objectInfoList, "Landscape", item.text);
+        if (panels.GetComponent<ModelPanelController>().IsHid)
+            panels.GetComponent<ModelPanelController>().ShowHidePanel(0);
     }
 }
