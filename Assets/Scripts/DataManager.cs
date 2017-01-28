@@ -6,6 +6,7 @@ using SimpleJSON;
 using Assets.Scripts.Classes;
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 
 public class DataManager : MonoBehaviour {
 
@@ -44,6 +45,10 @@ public class DataManager : MonoBehaviour {
 
     private string screenShotURL;
     public bool isSaving = false;
+
+    [DllImport("__Internal")]
+    private static extern void Resize();
+
 
     public string ScreenShotURL {
         get {
@@ -102,6 +107,10 @@ public class DataManager : MonoBehaviour {
         else {
             StartCoroutine(WaitTillDownloadedAssets(preexistingPlayground));
         }
+    }
+
+    void Update() {
+        //Resize();
     }
 
     IEnumerator WaitTillDownloadedAssets(bool isExsitingPlayground) {
