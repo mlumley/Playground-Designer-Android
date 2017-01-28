@@ -29,6 +29,9 @@ public class UIManager : MonoBehaviour {
 
     public GameObject DesignPanelObj;
 
+    public GameObject FullscreenButton;
+    public Font openSans;
+
     public void SetObjectData(List<DesignInfo> objects, string mainCategory, string catagory) {
 
         foreach(Transform child in ObjectScrollViewContent) {
@@ -61,6 +64,7 @@ public class UIManager : MonoBehaviour {
                 GameObject buttonPrefab = Instantiate(Resources.Load("UIPrefabs/Preview Model")) as GameObject;
                 buttonPrefab.transform.SetParent(LandscapeScrollViewContent, false);
                 buttonPrefab.GetComponent<ObjectSelectionButton>().PopulateButtonData(info);
+                buttonPrefab.GetComponentInChildren<Text>().font = openSans;
                 buttonPrefab.GetComponentInChildren<Text>().text = info.Name;
             }
         }
@@ -96,5 +100,12 @@ public class UIManager : MonoBehaviour {
 
     public void ToggleFullScreen() {
         Screen.fullScreen = !Screen.fullScreen;
+    }
+
+    void Update() {
+        if(Screen.fullScreen)
+            FullscreenButton.GetComponent<ShowHidePanelsController>().ChangeSprite(2);
+        else if(!Screen.fullScreen)
+            FullscreenButton.GetComponent<ShowHidePanelsController>().ChangeSprite(1);
     }
 }

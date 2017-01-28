@@ -18,4 +18,18 @@ public class ShowHidePanelsController : MonoBehaviour {
             isUp = true;
         }
     }
+
+    public void ChangeSprite(int sprite) {
+        if (sprite == 1) {
+            gameObject.GetComponent<Image>().sprite = down;
+            isUp = false;
+        }
+        else if(sprite == 2) {
+            gameObject.GetComponent<Image>().sprite = up;
+            isUp = true;
+        }
+        else {
+            Debug.Log("Error ChangeSprite not called with 1 or 2 or nothing");
+        }
+    }
 }
