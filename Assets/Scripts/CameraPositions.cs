@@ -186,18 +186,22 @@ public class CameraPositions : MonoBehaviour {
 
 
 
+        float speed = 0.5f;
 
-
-        if (Input.GetKey(KeyCode.UpArrow) && isFP == false) {
-            isZooming = true;
-            ZoomIn();
-            isZooming = false;
+        if ((Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W)) && isFP == false) {
+            cameraAnchor.position += speed * new Vector3(cameraAnchor.forward.x, 0, cameraAnchor.forward.z);
         }
 
-        if (Input.GetKey(KeyCode.DownArrow) && isFP == false) {
-            isZooming = true;
-            ZoomOut();
-            isZooming = false;
+        if ((Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S)) && isFP == false) {
+            cameraAnchor.position -= speed * new Vector3(cameraAnchor.forward.x, 0, cameraAnchor.forward.z);
+        }
+
+        if ((Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))&& isFP == false) {
+            cameraAnchor.position += speed * new Vector3(cameraAnchor.right.x, 0, cameraAnchor.right.z);
+        }
+
+        if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) && isFP == false) {
+            cameraAnchor.position -= speed * new Vector3(cameraAnchor.right.x, 0, cameraAnchor.right.z);
         }
 
 
@@ -284,6 +288,13 @@ public class CameraPositions : MonoBehaviour {
 
 		}*/
 
+    }
+
+    Vector3 rotateAround(Vector3 point, Vector3 pivot, Vector3 angle) {
+        Vector3 dir = point - pivot;
+        dir = Quaternion.Euler(angle) * dir;
+        point = dir + pivot;
+        return point;
     }
 
     /*public void UpdatePosition() {

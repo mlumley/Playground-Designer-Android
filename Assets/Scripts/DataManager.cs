@@ -368,7 +368,7 @@ public class DataManager : MonoBehaviour {
             yield return null;
         //Debug.Log("Started downloading " + bundleName);
         // Increment version number with new assest bundles
-        var www = WWW.LoadFromCacheOrDownload(BaseUrlOfApi + "wp-simulate/AssetBundles/" + bundleName, 3);
+        var www = WWW.LoadFromCacheOrDownload(BaseUrlOfApi + "wp-simulate/AssetBundles/" + bundleName, 4);
         yield return www;
         if (!string.IsNullOrEmpty(www.error)) {
             Debug.Log(www.error);
