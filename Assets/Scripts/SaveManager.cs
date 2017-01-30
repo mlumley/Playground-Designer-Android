@@ -35,7 +35,17 @@ namespace Assets.Scripts {
                 modelDatas.Add(data);
             }
 
-            SaveFile newSave = new SaveFile(modelDatas.ToArray());
+            GameObject[] photos = GameObject.FindGameObjectsWithTag("PhotoObject");
+            List<PhotoData> photoDatas = new List<PhotoData>();
+
+            //Debug.Log("Photos" + photos[0].ToString());
+
+            foreach(GameObject photo in photos) {
+                PhotoData data = new PhotoData(photo.transform.position, photo.transform.rotation, photo.transform.localScale, photo.GetComponent<SpriteRenderer>().sprite.texture.EncodeToPNG());
+                photoDatas.Add(data);
+            }
+
+            SaveFile newSave = new SaveFile(modelDatas.ToArray(), photoDatas.ToArray());
             //Debug.Log(newSave.ToString());
             return newSave;
         }
