@@ -11,6 +11,8 @@ namespace Assets.Scripts {
 
         public InputField fileName;
         public GameObject saveText;
+        public InputField width;
+        public InputField length;
 
         public void SavePlayground(bool withAnimation = true) {
             SaveFile save = MakeSaveFile();
@@ -24,28 +26,37 @@ namespace Assets.Scripts {
         }
 
         public SaveFile MakeSaveFile() {
+
             GameObject[] models = GameObject.FindGameObjectsWithTag("Models");
             List<ModelData> modelDatas = new List<ModelData>();
 
             string strToRemove = "(Clone)";
 
             foreach (GameObject model in models) {
-                string newName = model.name.Replace(strToRemove,"");
-                ModelData data = new ModelData(newName, model.transform.position, model.transform.rotation);
+                string newName = model.name.Replace(strToRemove, "");
+                ModelData data = new ModelData(newName, model.transform.position, model.transform.rotation, model.transform.localScale);
                 modelDatas.Add(data);
             }
-
             GameObject[] photos = GameObject.FindGameObjectsWithTag("PhotoObject");
             List<PhotoData> photoDatas = new List<PhotoData>();
 
             //Debug.Log("Photos" + photos[0].ToString());
 
-            foreach(GameObject photo in photos) {
+            foreach (GameObject photo in photos) {
                 PhotoData data = new PhotoData(photo.transform.position, photo.transform.rotation, photo.transform.localScale, photo.GetComponent<SpriteRenderer>().sprite.texture.EncodeToPNG());
                 photoDatas.Add(data);
             }
 
-            SaveFile newSave = new SaveFile(modelDatas.ToArray(), photoDatas.ToArray());
+            int widthValue = 80;
+            int lengthValue = 40;
+
+            if (width.text != "")
+                widthValue = int.Parse(width.text);
+            if (length.text != "")
+                lengthValue = int.Parse(length.text);
+
+
+            SaveFile newSave = new SaveFile(widthValue, lengthValue, modelDatas.ToArray(), photoDatas.ToArray());
             //Debug.Log(newSave.ToString());
             return newSave;
         }

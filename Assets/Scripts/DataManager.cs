@@ -67,7 +67,7 @@ public class DataManager : MonoBehaviour {
 
         //todo: get ID in web player (eg https://docs.unity3d.com/ScriptReference/Application-absoluteURL.html)
         string userId = "1"; //test user
-        int savedPlaygroundId = 0; //not saved
+        int savedPlaygroundId = 134; //not saved
 
         //string url = "http://playgroundideas.endzone.io/app-api/wp-simulate/app.php?userId=1&designId=2";
 

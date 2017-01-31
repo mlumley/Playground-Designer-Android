@@ -6,10 +6,13 @@ public class SaveFile {
     
     public ModelData[] models;
     public PhotoData[] photos;
+    public int width;
+    public int length;
 
-    public SaveFile(ModelData[] models, PhotoData[] photos) {
+    public SaveFile(int width, int length, ModelData[] models, PhotoData[] photos) {
+        this.width = width;
+        this.length = length;
         this.models = models;
-        this.photos = photos;
     }
 
     public override string ToString() {
