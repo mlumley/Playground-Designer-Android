@@ -266,11 +266,11 @@ public class DataManager : MonoBehaviour {
             preexistingPlayground = true;
         }
         //form.AddBinaryData("fileUpload", bytes, "screenShot.png", "image/png");
-        Debug.Log(saveFile);
+        //Debug.Log(saveFile);
         form.AddField("model", saveFile);
         form.AddBinaryData("screenshot", bytes, "screenShot_" + name + ".png", "image/png");
 
-        Debug.Log("Saving: Name: " + name + " User: " + UserId + " Model: " + saveFile);
+        //Debug.Log("Saving: Name: " + name + " User: " + UserId + " Model: " + saveFile);
 
         WWW www = new WWW(apiUrl, form);
         yield return www;
@@ -287,7 +287,7 @@ public class DataManager : MonoBehaviour {
 
         DesignId = N["playground"]["id"];
         screenShotURL = N["playground"]["screenshot_Url"];
-        Debug.Log("ScreenshotURL is " + DataManager.Instance.ScreenShotURL);
+        //Debug.Log("ScreenshotURL is " + DataManager.Instance.ScreenShotURL);
 
 
         if (N["status"].Value != "true") {
@@ -295,7 +295,7 @@ public class DataManager : MonoBehaviour {
             yield break;
         }
         isSaving = false;
-        Debug.Log(isSaving);
+        //Debug.Log(isSaving);
     }
 
 
@@ -354,6 +354,11 @@ public class DataManager : MonoBehaviour {
         ModelData[] models = saveFile.models;
         for (int i = 0; i < models.Length; i++) {
             StartCoroutine(PlayerManager.LoadObjectAtPositionAndRotation(objectInfoList, models[i].name, models[i].position, models[i].rotation, models[i].scale));
+        }
+
+        PhotoData[] photos = saveFile.photos;
+        foreach(PhotoData photo in photos) {
+            PlayerManager.LoadPhoto(photo.position, photo.rotation, photo.scale, photo.image);
         }
     }
 
