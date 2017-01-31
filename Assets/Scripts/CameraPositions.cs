@@ -32,7 +32,7 @@ public class CameraPositions : MonoBehaviour {
     Vector3 cameraMove;
     double xzHypotenuse;
 
-    public string StringToEdit = "Hello World";
+    public bool isTyping;
 
 
 
@@ -188,19 +188,19 @@ public class CameraPositions : MonoBehaviour {
 
         float speed = 0.5f;
 
-        if ((Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W)) && isFP == false) {
+        if ((Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W)) && isFP == false && !isTyping) {
             cameraAnchor.position += speed * new Vector3(cameraAnchor.forward.x, 0, cameraAnchor.forward.z);
         }
 
-        if ((Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S)) && isFP == false) {
+        if ((Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S)) && isFP == false && !isTyping) {
             cameraAnchor.position -= speed * new Vector3(cameraAnchor.forward.x, 0, cameraAnchor.forward.z);
         }
 
-        if ((Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))&& isFP == false) {
+        if ((Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))&& isFP == false && !isTyping) {
             cameraAnchor.position += speed * new Vector3(cameraAnchor.right.x, 0, cameraAnchor.right.z);
         }
 
-        if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) && isFP == false) {
+        if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) && isFP == false && !isTyping) {
             cameraAnchor.position -= speed * new Vector3(cameraAnchor.right.x, 0, cameraAnchor.right.z);
         }
 

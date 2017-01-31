@@ -67,7 +67,7 @@ public class DataManager : MonoBehaviour {
 
         //todo: get ID in web player (eg https://docs.unity3d.com/ScriptReference/Application-absoluteURL.html)
         string userId = "1"; //test user
-        int savedPlaygroundId = 134; //not saved
+        int savedPlaygroundId = 0; //not saved
 
         //string url = "http://playgroundideas.endzone.io/app-api/wp-simulate/app.php?userId=1&designId=2";
 
@@ -115,7 +115,10 @@ public class DataManager : MonoBehaviour {
     }
 
     void Update() {
-        //Resize();
+        if (playgroundName.isFocused || width.isFocused || height.isFocused)
+            CameraPositions.Instance.isTyping = true;
+        else
+            CameraPositions.Instance.isTyping = false;
     }
 
     IEnumerator WaitTillDownloadedAssets(bool isExsitingPlayground) {
