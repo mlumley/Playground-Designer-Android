@@ -50,6 +50,11 @@ public class DataManager : MonoBehaviour {
     private static extern void Resize();
 
 
+    public InputField playgroundName;
+    public InputField width;
+    public InputField height;
+
+
     public string ScreenShotURL {
         get {
             return screenShotURL;
@@ -185,7 +190,7 @@ public class DataManager : MonoBehaviour {
                 modelBundle = assetBundleLink.assetBundle;
             }*/
             yield return new WaitUntil (() => modelBundles.Count == names.Length);
-            LoadSaveFile(N["name"], N["playground"]["model"]);
+            LoadSaveFile(N["playground"]["name"], N["playground"]["model"]);
 
         }
     }
@@ -342,10 +347,13 @@ public class DataManager : MonoBehaviour {
 
     public void LoadSaveFile(string name, string saveJSON) {
         SaveFile saveFile = JsonUtility.FromJson<SaveFile>(saveJSON);
-        //todo: fileName.text = name;
+        //Debug.Log(name);
+        playgroundName.text = name;
+        width.text = saveFile.width.ToString();
+        height.text = saveFile.length.ToString();
         ModelData[] models = saveFile.models;
         for (int i = 0; i < models.Length; i++) {
-            StartCoroutine(PlayerManager.LoadObjectAtPositionAndRotation(models[i].name, models[i].position, models[i].rotation));
+            StartCoroutine(PlayerManager.LoadObjectAtPositionAndRotation(objectInfoList, models[i].name, models[i].position, models[i].rotation, models[i].scale));
         }
     }
 

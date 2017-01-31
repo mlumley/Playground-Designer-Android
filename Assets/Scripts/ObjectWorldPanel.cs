@@ -45,11 +45,11 @@ public class ObjectWorldPanel : MonoBehaviour {
     void Update() {
         if (target) {
             //DeleteButton.transform.position = Camera.main.WorldToScreenPoint(target.position + DeleteButtonOffset);
-            Vector3 point = Selector.transform.localScale.x * new Vector3(-1.25f, 0, 1.25f) + Selector.transform.position;
+            Vector3 point = Selector.transform.localScale.x * new Vector3(-1, 0, 1).normalized + new Vector3(-1.25f, 0, 1.25f) + Selector.transform.position;
             point = rotateAround(point, Selector.transform.position, new Vector3 (0, Camera.main.transform.parent.transform.eulerAngles.y, 0));
             DeleteButton.transform.position = Camera.main.WorldToScreenPoint(point);
 
-            point = Selector.transform.localScale.x * new Vector3(1.5f, 0, 0) + Selector.transform.position;
+            point = Selector.transform.localScale.x * new Vector3(1, 0, 0).normalized + new Vector3(1.5f, 0, 0) + Selector.transform.position;
             point = rotateAround(point, Selector.transform.position, new Vector3(0, Camera.main.transform.parent.transform.eulerAngles.y, 0));
             Slider.transform.position = Camera.main.WorldToScreenPoint(point);
         }

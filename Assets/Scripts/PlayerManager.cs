@@ -469,7 +469,7 @@ public class PlayerManager : MonoBehaviour {
         ObjectWorldPanel.Instance.SetTarget(currentObject);
     }
 
-    private void CalculateLocalBounds(GameObject newObject) {
+    private static void CalculateLocalBounds(GameObject newObject) {
         Quaternion currentRotation = newObject.transform.rotation;
         newObject.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
 
@@ -489,7 +489,7 @@ public class PlayerManager : MonoBehaviour {
         newObject.transform.rotation = currentRotation;
     }
 
-    public static IEnumerator LoadObjectAtPositionAndRotation(string objectName, Vector3 position, Quaternion rotation) {
+    public static IEnumerator LoadObjectAtPositionAndRotation(List<DesignInfo> infoList, string objectName, Vector3 position, Quaternion rotation, Vector3 scale) {
         // Load and retrieve the AssetBundle
         AssetBundle[] bundles = DataManager.modelBundles.ToArray();
         AssetBundle bundle = new AssetBundle();
@@ -510,14 +510,30 @@ public class PlayerManager : MonoBehaviour {
         GameObject newObject = Instantiate(request.asset) as GameObject;
         newObject.transform.position = position;
         newObject.transform.rotation = rotation;
-        newObject.AddComponent<BoxCollider>();
+        newObject.transform.localScale = scale;
+        /*newObject.AddComponent<BoxCollider>();
         newObject.GetComponent<BoxCollider>().center = Vector3.zero;
         newObject.GetComponent<BoxCollider>().size = new Vector3(10, 10, 10);
         newObject.GetComponent<BoxCollider>().isTrigger = true;
         newObject.AddComponent<SelectedObjectCollision>();
         newObject.layer = LayerMask.NameToLayer("DesignObject");
-        newObject.tag = "Models";
+        newObject.tag = "Models";*/
 
+        DesignInfo objectInfo = null;
+
+        foreach(DesignInfo info in infoList) {
+            if(info.Name == objectName) {
+                objectInfo = info;
+            }
+        }
+
+        newObject.AddComponent<ObjectInfo>();
+        newObject.GetComponent<ObjectInfo>().info = objectInfo;
+        newObject.AddComponent<BoxCollider>();
+        CalculateLocalBounds(newObject);
+        newObject.GetComponent<BoxCollider>().isTrigger = true;
+        newObject.layer = LayerMask.NameToLayer("DesignObject");
+        newObject.tag = "Models";
     }
 
     public void DeleteCurrentObject() {
