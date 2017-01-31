@@ -38,9 +38,7 @@ namespace Assets.Scripts {
                 modelDatas.Add(data);
             }
 
-<<<<<<< Updated upstream
             SaveFile newSave = new SaveFile(modelDatas.ToArray());
-=======
             GameObject[] photos = GameObject.FindGameObjectsWithTag("PhotoObject");
             List<PhotoData> photoDatas = new List<PhotoData>();
 
@@ -61,7 +59,6 @@ namespace Assets.Scripts {
                 
 
             SaveFile newSave = new SaveFile(widthValue, lengthValue, modelDatas.ToArray(), photoDatas.ToArray());
->>>>>>> Stashed changes
             //Debug.Log(newSave.ToString());
             return newSave;
         }

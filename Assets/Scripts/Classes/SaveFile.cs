@@ -5,10 +5,7 @@ using System.Collections;
 public class SaveFile {
     
     public ModelData[] models;
-<<<<<<< Updated upstream
-
     public SaveFile(ModelData[] models) {
-=======
     public PhotoData[] photos;
     public int width;
     public int length;
@@ -16,7 +13,6 @@ public class SaveFile {
     public SaveFile(int width, int length, ModelData[] models, PhotoData[] photos) {
         this.width = width;
         this.length = length;
->>>>>>> Stashed changes
         this.models = models;
     }
 
