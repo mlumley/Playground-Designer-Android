@@ -322,19 +322,36 @@ public class DataManager : MonoBehaviour {
         }
 
         JSONNode N = JSON.Parse(result);
+        //JsonData data = JsonUtility.FromJson<JsonData>(result);
 
         objectInfoList = new List<DesignInfo>();
 
         List<string> objectCatagories = new List<string>();
         List<string> landscapeCatagories = new List<string>();
 
+        Debug.Log("Line is " + N);
         for (int i = 0; i < N["Objects"].Count; i++) {
-            objectInfoList.Add(new DesignInfo(N["Objects"][i]["Name"].Value, N["Objects"][i]["ImageName"].Value, N["Objects"][i]["ModelName"].Value, N["Objects"][i]["MainCategory"].Value, N["Objects"][i]["Category"].Value));
-            //Debug.Log((N["Objects"][i]["MainCategory"].Value));
-            if (N["Objects"][i]["MainCategory"].Value == "Elements" && !objectCatagories.Contains(N["Objects"][i]["Category"].Value))
+            //foreach(DesignInfo info in data.data) {
+            DesignInfo info = new DesignInfo(N["Objects"][i]["Name"].Value, N["Objects"][i]["ImageName"].Value, N["Objects"][i]["ModelName"].Value, N["Objects"][i]["MainCategory"].Value, N["Objects"][i]["Category"].ToString());
+            objectInfoList.Add(info);
+            //Debug.Log(info.Category[0].ToString());
+            /*if (N["Objects"][i]["MainCategory"].Value == "Elements" && !objectCatagories.Contains(N["Objects"][i]["Category"].Value))
                 objectCatagories.Add(N["Objects"][i]["Category"].Value);
             else if (N["Objects"][i]["MainCategory"].Value == "Landscape" && !landscapeCatagories.Contains(N["Objects"][i]["Category"].Value))
-                landscapeCatagories.Add(N["Objects"][i]["Category"].Value);
+                landscapeCatagories.Add(N["Objects"][i]["Category"].Value);*/
+            //Debug.Log(model);
+            //DesignInfo info = JsonUtility.FromJson<DesignInfo>(model);
+            //Debug.Log(N["Objects"][i]["Category"]);
+            //objectInfoList.Add(N["Objects"][i]);
+            foreach (string category in info.Category) {
+                if (info.MainCategory == "Elements" && !objectCatagories.Contains(category)) {
+                    objectCatagories.Add(category);
+                }
+                else if (info.MainCategory == "Landscape" && !landscapeCatagories.Contains(category)) {
+                    landscapeCatagories.Add(category);
+                }
+            }
+
         }
 
         objectInfoList.Sort();

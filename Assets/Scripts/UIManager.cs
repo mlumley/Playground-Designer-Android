@@ -41,10 +41,11 @@ public class UIManager : MonoBehaviour {
         List<DesignInfo>PlaygroundObjects = new List<DesignInfo>(objects);
 
         foreach (DesignInfo info in PlaygroundObjects) {
-            if ((info.Category == catagory || catagory == "All") && info.MainCategory == mainCategory) {
+            if ((info.ContainsCategory(catagory) || catagory == "All") && info.MainCategory == mainCategory) {
                 GameObject buttonPrefab = Instantiate(Resources.Load("UIPrefabs/Preview Model")) as GameObject;
                 buttonPrefab.transform.SetParent(ObjectScrollViewContent, false);
                 buttonPrefab.GetComponent<ObjectSelectionButton>().PopulateButtonData(info);
+                buttonPrefab.GetComponentInChildren<Text>().font = openSans;
                 buttonPrefab.GetComponentInChildren<Text>().text = info.Name;
             }
         }
@@ -60,7 +61,7 @@ public class UIManager : MonoBehaviour {
         List<DesignInfo> PlaygroundObjects = new List<DesignInfo>(objects);
 
         foreach (DesignInfo info in PlaygroundObjects) {
-            if ((info.Category == catagory || catagory == "All") && info.MainCategory == mainCategory) {
+            if ((info.ContainsCategory(catagory) || catagory == "All") && info.MainCategory == mainCategory) {
                 GameObject buttonPrefab = Instantiate(Resources.Load("UIPrefabs/Preview Model")) as GameObject;
                 buttonPrefab.transform.SetParent(LandscapeScrollViewContent, false);
                 buttonPrefab.GetComponent<ObjectSelectionButton>().PopulateButtonData(info);
