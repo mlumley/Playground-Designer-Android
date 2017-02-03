@@ -57,6 +57,8 @@ public class PlayerManager : MonoBehaviour {
 
     GameObject rotationSphere = null;
 
+    public GameObject ToolTip;
+
     void Update() {
 
 
@@ -461,6 +463,14 @@ public class PlayerManager : MonoBehaviour {
         newObject.GetComponent<BoxCollider>().isTrigger = true;
         newObject.AddComponent<ObjectInfo>();
         newObject.GetComponent<ObjectInfo>().info = objectInfo;
+        //newObject.AddComponent<EventTrigger>();
+        /*EventTrigger.Entry entry = new EventTrigger.Entry();
+        entry.eventID = EventTriggerType.PointerEnter;
+        entry.callback.AddListener((eventData) => ToolTip.GetComponent<TooltipController>().SetTooltipText("Double click a design to Move / Rotate"));
+        entry.callback.AddListener((eventData) => ToolTip.transform.GetChild(0).gameObject.SetActive(true));
+        EventTrigger.Entry exit = new EventTrigger.Entry();
+        exit.eventID = EventTriggerType.PointerExit;
+        exit.callback.AddListener((eventData) => ToolTip.transform.GetChild(0).gameObject.SetActive(false));*/
         newObject.layer = LayerMask.NameToLayer("DesignObject");
         newObject.tag = "Models";
         currentObject = newObject.transform;
@@ -510,7 +520,7 @@ public class PlayerManager : MonoBehaviour {
         GameObject newObject = Instantiate(request.asset) as GameObject;
         newObject.transform.position = position;
         newObject.transform.rotation = rotation;
-        newObject.transform.localScale = scale;
+        
         /*newObject.AddComponent<BoxCollider>();
         newObject.GetComponent<BoxCollider>().center = Vector3.zero;
         newObject.GetComponent<BoxCollider>().size = new Vector3(10, 10, 10);
@@ -522,15 +532,17 @@ public class PlayerManager : MonoBehaviour {
         DesignInfo objectInfo = null;
 
         foreach(DesignInfo info in infoList) {
-            if(info.Name == objectName) {
+            //Debug.Log(info.Name);
+            if(info.Name.ToLower() == objectName.ToLower()) {
                 objectInfo = info;
             }
         }
-
+        //Debug.Log("Info " + objectInfo.MainCategory);
         newObject.AddComponent<ObjectInfo>();
         newObject.GetComponent<ObjectInfo>().info = objectInfo;
         newObject.AddComponent<BoxCollider>();
         CalculateLocalBounds(newObject);
+        newObject.transform.localScale = scale;
         newObject.GetComponent<BoxCollider>().isTrigger = true;
         newObject.layer = LayerMask.NameToLayer("DesignObject");
         newObject.tag = "Models";

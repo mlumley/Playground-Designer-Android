@@ -42,7 +42,7 @@ public class ObjectWorldPanel : MonoBehaviour {
             Slider.SetActive(false);
         }
     }
-    void Update() {
+    void LateUpdate() {
         if (target) {
             //DeleteButton.transform.position = Camera.main.WorldToScreenPoint(target.position + DeleteButtonOffset);
             Vector3 point = Selector.transform.localScale.x * new Vector3(-1, 0, 1).normalized + new Vector3(-1.25f, 0, 1.25f) + Selector.transform.position;

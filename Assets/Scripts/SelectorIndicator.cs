@@ -29,6 +29,9 @@ public class SelectorIndicator : MonoBehaviour {
     void Update() {
         if (selectedObject) {
             selector.transform.position = selectedObject.transform.position;
+            float diameter = selectedObject.GetComponent<BoxCollider>().size.x > selectedObject.GetComponent<BoxCollider>().size.z ? selectedObject.GetComponent<BoxCollider>().size.x : selectedObject.GetComponent<BoxCollider>().size.z;
+            diameter += 1;
+            selector.transform.localScale = new Vector3(diameter * selectedObject.transform.localScale.x, 1, diameter * selectedObject.transform.localScale.z);
         }
     }
 

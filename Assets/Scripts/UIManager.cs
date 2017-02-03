@@ -101,6 +101,7 @@ public class UIManager : MonoBehaviour {
 
     public void ToggleFullScreen() {
         Screen.fullScreen = !Screen.fullScreen;
+        Application.ExternalCall("resize_canvas");
     }
 
     void Update() {

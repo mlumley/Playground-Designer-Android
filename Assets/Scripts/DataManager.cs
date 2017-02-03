@@ -376,10 +376,10 @@ public class DataManager : MonoBehaviour {
             StartCoroutine(PlayerManager.LoadObjectAtPositionAndRotation(objectInfoList, models[i].name, models[i].position, models[i].rotation, models[i].scale));
         }
 
-        PhotoData[] photos = saveFile.photos;
+        /*PhotoData[] photos = saveFile.photos;
         foreach(PhotoData photo in photos) {
             PlayerManager.LoadPhoto(photo.position, photo.rotation, photo.scale, photo.image);
-        }
+        }*/
     }
 
     // Not in use
@@ -401,7 +401,7 @@ public class DataManager : MonoBehaviour {
             yield return null;
         //Debug.Log("Started downloading " + bundleName);
         // Increment version number with new assest bundles
-        var www = WWW.LoadFromCacheOrDownload(BaseUrlOfApi + "wp-simulate/AssetBundles/" + bundleName, 4);
+        var www = WWW.LoadFromCacheOrDownload(BaseUrlOfApi + "wp-simulate/AssetBundles/" + bundleName, 5);
         yield return www;
         if (!string.IsNullOrEmpty(www.error)) {
             Debug.Log(www.error);

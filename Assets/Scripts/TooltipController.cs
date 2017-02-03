@@ -12,6 +12,9 @@ public class TooltipController : MonoBehaviour {
     Vector3 screenOffset;
     bool fullScreen = false;
 
+    public GameObject Canvas;
+    public GameObject panels;
+
 
     public bool ModelPanels {
         set {
@@ -33,9 +36,11 @@ public class TooltipController : MonoBehaviour {
         height = -Screen.height;
         if (modelPanels) {
             //Debug.Log("Models");
+            gameObject.transform.SetParent(panels.transform);
             tooltip.transform.localPosition = new Vector3(0, -490, 0);
         }
         else if (tooltip.activeSelf) {
+            gameObject.transform.SetParent(Canvas.transform);
             StartCoroutine(CheckBounds());
             tooltip.transform.localPosition = screenOffset + mouseOffset;
         }

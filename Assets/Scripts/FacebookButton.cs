@@ -74,8 +74,8 @@ public class FacebookButton : MonoBehaviour {
     }
 
     void Start() {
-        caption = postPanel.GetComponentInChildren<InputField>();
-        postButton = postPanel.GetComponentInChildren<Button>();
+        //caption = postPanel.GetComponentInChildren<InputField>();
+        //postButton = postPanel.GetComponentInChildren<Button>();
     }
 
     private void InitCallback() {
