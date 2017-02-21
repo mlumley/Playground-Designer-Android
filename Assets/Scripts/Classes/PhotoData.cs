@@ -7,13 +7,13 @@ public class PhotoData {
     public Vector3 position;
     public Quaternion rotation;
     public Vector3 scale;
-    public byte[] image;
+    public string imageURL;
 
-    public PhotoData(Vector3 position, Quaternion rotation, Vector3 scale, byte[] image) {
+    public PhotoData(Vector3 position, Quaternion rotation, Vector3 scale, string imageURL) {
         this.position = position;
         this.rotation = rotation;
         this.scale = scale;
-        this.image = image;
+        this.imageURL = imageURL;
     }
 
     public override string ToString() {

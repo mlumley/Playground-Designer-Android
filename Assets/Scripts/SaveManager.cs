@@ -43,7 +43,7 @@ namespace Assets.Scripts {
             //Debug.Log("Photos" + photos[0].ToString());
 
             foreach (GameObject photo in photos) {
-                PhotoData data = new PhotoData(photo.transform.position, photo.transform.rotation, photo.transform.localScale, photo.GetComponent<SpriteRenderer>().sprite.texture.EncodeToPNG());
+                PhotoData data = new PhotoData(photo.transform.position, photo.transform.rotation, photo.transform.localScale, photo.GetComponent<SpriteRenderer>().sprite.texture.EncodeToPNG().ToString());
                 photoDatas.Add(data);
             }
 

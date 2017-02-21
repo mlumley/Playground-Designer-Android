@@ -274,7 +274,7 @@ public class DataManager : MonoBehaviour {
         form.AddBinaryData("screenshot", bytes, "screenShot_" + name + ".png", "image/png");
 
         //Debug.Log("Saving: Name: " + name + " User: " + UserId + " Model: " + saveFile);
-
+        Debug.Log(apiUrl);
         WWW www = new WWW(apiUrl, form);
         yield return www;
 
@@ -387,7 +387,7 @@ public class DataManager : MonoBehaviour {
         // Load the AssetBundle file from Cache if it exists with the same version or download and store it in the cache
         //using (WWW www = WWW.LoadFromCacheOrDownload(BaseUrlOfApi + "wp-simulate/models", 1)) {
         Debug.Log("Started downloading " + bundleName);
-        using (WWW www = new WWW(BaseUrlOfApi + "wp-simulate/AssetBundles/" + bundleName)) {
+        using (WWW www = new WWW("http://playgroundideas.endzone.io/app-api/" + "wp-simulate/AssetBundles/" + bundleName)) {
             yield return www;
             Debug.Log("Finished downloading " + bundleName);
             if (www.error != null)
@@ -401,7 +401,7 @@ public class DataManager : MonoBehaviour {
             yield return null;
         //Debug.Log("Started downloading " + bundleName);
         // Increment version number with new assest bundles
-        var www = WWW.LoadFromCacheOrDownload(BaseUrlOfApi + "wp-simulate/AssetBundles/" + bundleName, 5);
+        var www = WWW.LoadFromCacheOrDownload("http://playgroundideas.endzone.io/app-api/" + "wp-simulate/AssetBundles/" + bundleName, 5);
         yield return www;
         if (!string.IsNullOrEmpty(www.error)) {
             Debug.Log(www.error);
