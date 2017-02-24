@@ -66,8 +66,29 @@ public class PlayerManager : MonoBehaviour {
         // Selected an object and deselect when not clicking on an object
         if (Input.GetMouseButtonDown(0)) {
             //.Debug.Log("Mouse Down");
+            /*RaycastHit hitInfo = new RaycastHit();
+            bool hit = Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo);*/
+
+            // Select the smallest object
+            RaycastHit[] hits;
+            hits = Physics.RaycastAll(Camera.main.ScreenPointToRay(Input.mousePosition), Mathf.Infinity);
+
+            bool hit = false;
             RaycastHit hitInfo = new RaycastHit();
-            bool hit = Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo);
+            if (hits.Length > 1) {
+                foreach (RaycastHit info in hits) {
+                    Debug.Log(info.transform.name);
+                    if (hitInfo.collider == null || info.collider.bounds.size.x < hitInfo.collider.bounds.size.x || info.collider.bounds.size.z < hitInfo.collider.bounds.size.z) {
+                        hitInfo = info;
+                        hit = true;
+                    }
+                }
+            }
+            else if(hits.Length == 1) {
+                hit = true;
+                hitInfo = hits[0];
+            }
+
 
             // Check if we hit the UI
             PointerEventData cursor = new PointerEventData(EventSystem.current);
