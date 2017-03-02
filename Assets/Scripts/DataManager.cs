@@ -297,6 +297,12 @@ public class DataManager : MonoBehaviour {
             Debug.LogError("Error with saving.");
             yield break;
         }
+
+        //HAVE TO POST IMAGES HERE CAUSE WE NEED DESIGNID
+        /*  Save Image: /images/save.php
+            Post vars: userId, designId (playground id), name (optional), image (image file)
+        */
+
         isSaving = false;
         //Debug.Log(isSaving);
     }
@@ -339,11 +345,11 @@ public class DataManager : MonoBehaviour {
                 objectCatagories.Add(N["Objects"][i]["Category"].Value);
             else if (N["Objects"][i]["MainCategory"].Value == "Landscape" && !landscapeCatagories.Contains(N["Objects"][i]["Category"].Value))
                 landscapeCatagories.Add(N["Objects"][i]["Category"].Value);*/
-            //Debug.Log(model);
-            //DesignInfo info = JsonUtility.FromJson<DesignInfo>(model);
-            //Debug.Log(N["Objects"][i]["Category"]);
-            //objectInfoList.Add(N["Objects"][i]);
-            foreach (string category in info.Category) {
+        //Debug.Log(model);
+        //DesignInfo info = JsonUtility.FromJson<DesignInfo>(model);
+        //Debug.Log(N["Objects"][i]["Category"]);
+        //objectInfoList.Add(N["Objects"][i]);
+        foreach (string category in info.Category) {
                 if (info.MainCategory == "Elements" && !objectCatagories.Contains(category)) {
                     objectCatagories.Add(category);
                 }
@@ -375,6 +381,8 @@ public class DataManager : MonoBehaviour {
         for (int i = 0; i < models.Length; i++) {
             StartCoroutine(PlayerManager.LoadObjectAtPositionAndRotation(objectInfoList, models[i].name, models[i].position, models[i].rotation, models[i].scale));
         }
+
+        // HERE WE GET EACH IMAGE AND LOAD IT
 
         /*PhotoData[] photos = saveFile.photos;
         foreach(PhotoData photo in photos) {

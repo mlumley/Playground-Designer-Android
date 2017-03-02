@@ -42,8 +42,9 @@ namespace Assets.Scripts {
 
             //Debug.Log("Photos" + photos[0].ToString());
 
+            // IN HERE WE SHOULD CREATE A LIST OF PHOTOS TEX AND PASS THAT TO DATAMANAGER WITH THE SAME NAME AS PHOTO.NAME
             foreach (GameObject photo in photos) {
-                PhotoData data = new PhotoData(photo.transform.position, photo.transform.rotation, photo.transform.localScale, photo.GetComponent<SpriteRenderer>().sprite.texture.EncodeToPNG().ToString());
+                PhotoData data = new PhotoData(photo.transform.position, photo.transform.rotation, photo.transform.localScale, photo.name);
                 photoDatas.Add(data);
             }
 

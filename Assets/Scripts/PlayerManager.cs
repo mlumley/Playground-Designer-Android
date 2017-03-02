@@ -569,6 +569,8 @@ public class PlayerManager : MonoBehaviour {
         newObject.tag = "Models";
     }
 
+    // CHANGE ME
+    // Get one image: /images/get.php?userId={x}&designId={y}&name={n}
     public static void LoadPhoto(Vector3 position, Quaternion rotation, Vector3 scale, byte[] image) {
         GameObject photoObject = Instantiate(Resources.Load("UIPrefabs/PhotoWorldObject")) as GameObject;
         photoObject.transform.position = position;
