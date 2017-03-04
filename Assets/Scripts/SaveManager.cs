@@ -16,9 +16,9 @@ namespace Assets.Scripts {
 
         public void SavePlayground(bool withAnimation = true) {
             SaveFile save = MakeSaveFile();
-            string saveJSON = JsonUtility.ToJson(save);
+            //string saveJSON = JsonUtility.ToJson(save);
             //Debug.Log(saveJSON);
-            StartCoroutine(DataManager.Instance.SavePlayground(fileName.text, saveJSON));
+            StartCoroutine(DataManager.Instance.SavePlayground(fileName.text, save));
             if (withAnimation) {
                 saveText.SetActive(true);
                 saveText.GetComponent<Animation>().Play();
@@ -44,7 +44,8 @@ namespace Assets.Scripts {
 
             // IN HERE WE SHOULD CREATE A LIST OF PHOTOS TEX AND PASS THAT TO DATAMANAGER WITH THE SAME NAME AS PHOTO.NAME
             foreach (GameObject photo in photos) {
-                PhotoData data = new PhotoData(photo.transform.position, photo.transform.rotation, photo.transform.localScale, photo.name);
+                Texture2D image = photo.GetComponent<SpriteRenderer>().sprite.texture;
+                PhotoData data = new PhotoData(photo.transform.position, photo.transform.rotation, photo.transform.localScale, photo.name, image);
                 photoDatas.Add(data);
             }
 

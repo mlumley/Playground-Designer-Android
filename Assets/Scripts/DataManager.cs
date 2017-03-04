@@ -66,8 +66,8 @@ public class DataManager : MonoBehaviour {
         StartCoroutine(LoadData());
 
         //todo: get ID in web player (eg https://docs.unity3d.com/ScriptReference/Application-absoluteURL.html)
-        string userId = "1"; //test user
-        int savedPlaygroundId = 0; //not saved
+        string userId = "4174"; //test user
+        int savedPlaygroundId = 9; //not saved
 
         //string url = "http://playgroundideas.endzone.io/app-api/wp-simulate/app.php?userId=1&designId=2";
 
@@ -137,6 +137,7 @@ public class DataManager : MonoBehaviour {
         okButton.GetComponentInChildren<Text>().text = "Ready!";
     }
 
+    // Not used
     public IEnumerator GetScreenShotURL() {
         yield return new WaitUntil(() => isSaving == false);
         string jsonUrl = BaseUrlOfApi + "/playgrounds/get.php?userId=" + UserId;
@@ -155,7 +156,7 @@ public class DataManager : MonoBehaviour {
         JSONNode N = JSON.Parse(json);
         Debug.Log("Full Json returned from API: " + json);
 
-        
+
 
         yield return "http://playgroundideas.endzone.io/app-api/uploads/" + N["screenShot"];
         Debug.Log("ScreenshotURL is " + DataManager.Instance.ScreenShotURL);
@@ -178,24 +179,48 @@ public class DataManager : MonoBehaviour {
 
         JSONNode N = JSON.Parse(json);
 
+
+        string imageUrl = BaseUrlOfApi + "/images/get.php?userId=" + UserId + "&designId=" + savedPlaygroundId;
+        string imageJSON = "";
+
+        WWW imageWWW = new WWW(imageUrl);
+        yield return imageWWW;
+        if (!string.IsNullOrEmpty(imageWWW.error)) {
+            Debug.LogError("LoadUser API call error (" + jsonUrl + "): " + imageWWW.error);
+            yield break;
+        }
+
+        json = imageWWW.text;
+
+        JSONNode N2 = JSON.Parse(json);
+
+        if (N2["status"].Value != "true") {
+            Debug.LogError("Playground not found.");
+            yield break;
+        }
+
         if (N["status"].Value != "true") {
             Debug.LogError("Playground not found.");
             yield break;
         }
-        else {
-            Debug.Log("Full Json returned from API: " + json);
-            Debug.Log("Model Json returned from API: " + N["playground"]["model"] + " Name: " + N["name"]);
-            //todo: parse the model
-            /*using (WWW assetBundleLink = new WWW(BaseUrlOfApi + "wp-simulate/models")) {
-                yield return assetBundleLink;
-                if (assetBundleLink.error != null)
-                    throw new Exception("WWW download had an error:" + assetBundleLink.error);
-                modelBundle = assetBundleLink.assetBundle;
-            }*/
-            yield return new WaitUntil (() => modelBundles.Count == names.Length);
-            LoadSaveFile(N["playground"]["name"], N["playground"]["model"]);
 
+        Debug.Log("Full Json returned from API: " + json);
+        Debug.Log("Model Json returned from API: " + N["playground"]["model"] + " Name: " + N["name"]);
+        yield return new WaitUntil(() => modelBundles.Count == names.Length);
+
+        List<PhotoData> images = new List<PhotoData>();
+        for (int i = 0; i < N2["images"].Count; i++) {
+            WWW imageOneWWW = new WWW(N2["images"][i]["full_Url"]);
+            yield return imageOneWWW;
+            images.Add(new PhotoData(Vector3.zero, Quaternion.identity, Vector3.zero, N2["images"][i]["name"], imageOneWWW.texture));
         }
+        //Debug.Log(images.Count);
+        LoadSaveFile(N["playground"]["name"], N["playground"]["model"], images.ToArray());
+
+
+
+
+
     }
 
     IEnumerator LoadUser(string userId) {
@@ -227,7 +252,8 @@ public class DataManager : MonoBehaviour {
     }
 
 
-    public IEnumerator SavePlayground(string name, string saveFile) {
+    public IEnumerator SavePlayground(string name, SaveFile saveFile) {
+        string saveJSON = JsonUtility.ToJson(saveFile);
         isSaving = true;
 #if UNITY_EDITOR
         Debug.Log("WaitForEndOfFrame doesn't work in editor");
@@ -270,7 +296,7 @@ public class DataManager : MonoBehaviour {
         }
         //form.AddBinaryData("fileUpload", bytes, "screenShot.png", "image/png");
         //Debug.Log(saveFile);
-        form.AddField("model", saveFile);
+        form.AddField("model", saveJSON);
         form.AddBinaryData("screenshot", bytes, "screenShot_" + name + ".png", "image/png");
 
         //Debug.Log("Saving: Name: " + name + " User: " + UserId + " Model: " + saveFile);
@@ -302,6 +328,56 @@ public class DataManager : MonoBehaviour {
         /*  Save Image: /images/save.php
             Post vars: userId, designId (playground id), name (optional), image (image file)
         */
+
+        // Delete exisiting photos
+        /*string imageUrl = BaseUrlOfApi + "/images/get.php?userId=" + UserId + "&designId=" + DesignId;
+        string imageJSON = "";
+
+        WWW imageOneWWW = new WWW(imageUrl);
+        yield return imageOneWWW;
+        if (!string.IsNullOrEmpty(imageOneWWW.error)) {
+            Debug.Log("SavePlayground API call error: " + imageOneWWW.error);
+            yield break;
+        }
+
+        imageJSON = imageOneWWW.text;
+
+        JSONNode N3 = JSON.Parse(imageJSON);
+        for(int i = 0; i < N3["images"].Count; i++) {
+            WWW delete = new WWW(BaseUrlOfApi + "/images/delete.php?userId=" + UserId + "&designId=" + DesignId + "&imageId=" + i);
+            yield return delete;
+            Debug.Log(delete.text);
+        }*/
+
+        // Move out into own function
+        // Upload photos
+        Debug.Log(saveFile.ToString());
+        foreach (PhotoData photo in saveFile.photos) {
+            WWWForm imageForm = new WWWForm();
+            imageForm.AddField("userId", UserId);
+            imageForm.AddField("designId", DesignId);
+            imageForm.AddField("name", photo.name);
+            imageForm.AddBinaryData("image", photo.Image.EncodeToPNG());
+
+            WWW imageWWW = new WWW(BaseUrlOfApi + "/images/save.php", imageForm);
+            yield return imageWWW;
+
+            yield return new WaitForSecondsRealtime(0.5f);
+
+            if (!string.IsNullOrEmpty(imageWWW.error)) {
+                Debug.Log("SavePlayground API call error: " + imageWWW.error);
+                yield break;
+            }
+
+            json = imageWWW.text;
+            Debug.Log(json);
+
+            JSONNode N2 = JSON.Parse(json);
+            if (N2["status"].Value != "true") {
+                Debug.LogError("Error with saving.");
+                yield break;
+            }
+        }
 
         isSaving = false;
         //Debug.Log(isSaving);
@@ -345,11 +421,11 @@ public class DataManager : MonoBehaviour {
                 objectCatagories.Add(N["Objects"][i]["Category"].Value);
             else if (N["Objects"][i]["MainCategory"].Value == "Landscape" && !landscapeCatagories.Contains(N["Objects"][i]["Category"].Value))
                 landscapeCatagories.Add(N["Objects"][i]["Category"].Value);*/
-        //Debug.Log(model);
-        //DesignInfo info = JsonUtility.FromJson<DesignInfo>(model);
-        //Debug.Log(N["Objects"][i]["Category"]);
-        //objectInfoList.Add(N["Objects"][i]);
-        foreach (string category in info.Category) {
+            //Debug.Log(model);
+            //DesignInfo info = JsonUtility.FromJson<DesignInfo>(model);
+            //Debug.Log(N["Objects"][i]["Category"]);
+            //objectInfoList.Add(N["Objects"][i]);
+            foreach (string category in info.Category) {
                 if (info.MainCategory == "Elements" && !objectCatagories.Contains(category)) {
                     objectCatagories.Add(category);
                 }
@@ -371,7 +447,7 @@ public class DataManager : MonoBehaviour {
     }
 
 
-    public void LoadSaveFile(string name, string saveJSON) {
+    public void LoadSaveFile(string name, string saveJSON, PhotoData[] saveImages) {
         SaveFile saveFile = JsonUtility.FromJson<SaveFile>(saveJSON);
         //Debug.Log(name);
         playgroundName.text = name;
@@ -383,11 +459,20 @@ public class DataManager : MonoBehaviour {
         }
 
         // HERE WE GET EACH IMAGE AND LOAD IT
-
-        /*PhotoData[] photos = saveFile.photos;
-        foreach(PhotoData photo in photos) {
-            PlayerManager.LoadPhoto(photo.position, photo.rotation, photo.scale, photo.image);
-        }*/
+        PhotoData[] photos = saveFile.photos;
+        Debug.Log("SaveFile photo length: " + photos.Length + ", SaveImages length: " + saveImages.Length);
+        if (photos.Length != saveImages.Length) {
+            Debug.Log("Error images missing");
+        }
+        foreach (PhotoData photo in photos) {
+            foreach (PhotoData file in saveImages) {
+                if (photo.name == file.name) {
+                    Debug.Log(file.Image.width);
+                    PlayerManager.LoadPhoto(photo.position, photo.rotation, photo.scale, file.Image);
+                    break;
+                }
+            }
+        }
     }
 
     // Not in use
@@ -395,7 +480,7 @@ public class DataManager : MonoBehaviour {
         // Load the AssetBundle file from Cache if it exists with the same version or download and store it in the cache
         //using (WWW www = WWW.LoadFromCacheOrDownload(BaseUrlOfApi + "wp-simulate/models", 1)) {
         Debug.Log("Started downloading " + bundleName);
-        using (WWW www = new WWW("http://playgroundideas.endzone.io/app-api/" + "wp-simulate/AssetBundles/" + bundleName)) {
+        using (WWW www = new WWW("http://staging.playgroundideas.org/designer/" + "AssetBundles/" + bundleName)) {
             yield return www;
             Debug.Log("Finished downloading " + bundleName);
             if (www.error != null)
@@ -409,7 +494,7 @@ public class DataManager : MonoBehaviour {
             yield return null;
         //Debug.Log("Started downloading " + bundleName);
         // Increment version number with new assest bundles
-        var www = WWW.LoadFromCacheOrDownload("http://playgroundideas.endzone.io/app-api/" + "wp-simulate/AssetBundles/" + bundleName, 8);
+        var www = WWW.LoadFromCacheOrDownload("http://staging.playgroundideas.org/designer/" + "AssetBundles/" + bundleName, 8);
         yield return www;
         if (!string.IsNullOrEmpty(www.error)) {
             Debug.Log(www.error);

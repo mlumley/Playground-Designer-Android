@@ -48,6 +48,7 @@ public class UploadImage : MonoBehaviour {
         //worldPhotoPanel.SetImage(texture);
         //worldPhotoPanel.Select(true);
         GameObject photoObject = Instantiate(Resources.Load("UIPrefabs/PhotoWorldObject")) as GameObject;
+        photoObject.name = "PhotoObject" + Guid.NewGuid().ToString();
         photoObject.transform.position = Vector3.zero;
         photoObject.GetComponent<SpriteRenderer>().sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0f));
         //photoObject.GetComponent<SpriteRenderer>().sortingOrder = 10;

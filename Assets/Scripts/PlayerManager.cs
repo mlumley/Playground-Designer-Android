@@ -571,13 +571,14 @@ public class PlayerManager : MonoBehaviour {
 
     // CHANGE ME
     // Get one image: /images/get.php?userId={x}&designId={y}&name={n}
-    public static void LoadPhoto(Vector3 position, Quaternion rotation, Vector3 scale, byte[] image) {
+    public static void LoadPhoto(Vector3 position, Quaternion rotation, Vector3 scale, Texture2D image) {
         GameObject photoObject = Instantiate(Resources.Load("UIPrefabs/PhotoWorldObject")) as GameObject;
+        photoObject.name = "PhotoObject" + Guid.NewGuid().ToString();
         photoObject.transform.position = position;
         photoObject.transform.rotation = rotation;
         photoObject.transform.localScale = scale;
-        Texture2D texture = new Texture2D(1, 1);
-        texture.LoadImage(image);
+        Texture2D texture = new Texture2D(1,1);
+        texture = image;
         photoObject.GetComponent<SpriteRenderer>().sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0f));
         //photoObject.GetComponent<SpriteRenderer>().sortingOrder = 10;
         photoObject.GetComponent<BoxCollider>().center = photoObject.GetComponent<SpriteRenderer>().sprite.bounds.center;

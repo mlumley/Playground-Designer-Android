@@ -13,10 +13,11 @@ public class SaveFile {
         this.width = width;
         this.length = length;
         this.models = models;
+        this.photos = photos;
     }
 
     public override string ToString() {
-        return "Model Length: " + models.Length + ", " + modelInfo(models);
+        return "Model Length: " + models.Length + ", " + modelInfo(models) + " Photo Length: " + photos.Length;
     }
 
     private string modelInfo(ModelData[] models) {
