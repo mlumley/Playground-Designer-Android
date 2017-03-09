@@ -165,7 +165,7 @@
 	{"Name":"Zig Zag Tire Trail","ImageName":"zig_zag_tire_trail","ModelName":"zig_zag_tire_trail","MainCategory":"Elements","Category":["Balance", "Car Tire"]},
 	{"Name":"Fence","ImageName":"Fence","ModelName":"Fence","MainCategory":"Landscape","Category":["Ground cover"]},
 	{"Name":"Swing Seat Tire Metal","ImageName":"Swing_Seat_Tire_Metal","ModelName":"Swing_Seat_Tire_Metal","MainCategory":"Elements","Category":["Imaginative"]},
-	{"Name":"Shop Front","ImageName":"ShopFront","ModelName":"ShopFront","MainCategory":"Elements","Category":["Cubbies"]},
+	{"Name":"Shop Front","ImageName":"ShopFront","ModelName":"ShopFront","MainCategory":"Elements","Category":["Cubbies / Platforms / Shops"]},
 	{"Name":"Rebar Igloo","ImageName":"Rebar_Igloo","ModelName":"Rebar_Igloo","MainCategory":"Elements","Category":["Imaginative"]},
 	{"Name":"Motorbike","ImageName":"Motorbike","ModelName":"Motorbike","MainCategory":"Elements","Category":["Imaginative"]}
 ]}
