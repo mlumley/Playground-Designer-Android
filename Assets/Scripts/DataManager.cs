@@ -494,7 +494,7 @@ public class DataManager : MonoBehaviour {
             yield return null;
         //Debug.Log("Started downloading " + bundleName);
         // Increment version number with new assest bundles
-        var www = WWW.LoadFromCacheOrDownload("http://staging.playgroundideas.org/designer/" + "AssetBundles/" + bundleName, 8);
+        var www = WWW.LoadFromCacheOrDownload("http://staging.playgroundideas.org/designer/" + "AssetBundles/" + bundleName, 9);
         yield return www;
         if (!string.IsNullOrEmpty(www.error)) {
             Debug.Log(www.error);

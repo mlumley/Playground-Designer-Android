@@ -7,6 +7,7 @@ public class AutoSave : MonoBehaviour {
 
     public float interval;
     public SaveManager saveManager;
+    public GameObject infoScreen;
 
     private float currentTime;
     private bool infoScreenOff = false;
@@ -18,7 +19,7 @@ public class AutoSave : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (infoScreenOff || !GameObject.Find("Info Screen").activeSelf) {
+        if (infoScreenOff || !infoScreen.activeSelf) {
             infoScreenOff = true;
             currentTime -= Time.deltaTime;
 
