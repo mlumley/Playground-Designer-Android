@@ -29,6 +29,8 @@ public class DataManager : MonoBehaviour {
     public string BaseUrlOfApi;
     public string UserId;
     public string DesignId;
+    private static bool publicPlayground;
+    public ToogleSwitch playgroundSwitch;
 
     public static List<DesignInfo> objectInfoList;
 
@@ -58,6 +60,15 @@ public class DataManager : MonoBehaviour {
     public string ScreenShotURL {
         get {
             return screenShotURL;
+        }
+    }
+
+    public bool PublicPlayground{
+        get {
+            return publicPlayground;
+        }
+        set {
+            publicPlayground = value;
         }
     }
 
@@ -179,6 +190,17 @@ public class DataManager : MonoBehaviour {
 
         JSONNode N = JSON.Parse(json);
 
+        if(N["public"] == "True") {
+            PublicPlayground = true;
+        }
+        else if (N["public"] == "False") {
+            PublicPlayground = false;
+        }
+        else {
+            Debug.Log("Error public field in save file is not a boolean");
+        }
+        playgroundSwitch.UpdateToggle();
+
 
         string imageUrl = BaseUrlOfApi + "/images/get.php?userId=" + UserId + "&designId=" + savedPlaygroundId;
         string imageJSON = "";
@@ -298,6 +320,7 @@ public class DataManager : MonoBehaviour {
         //Debug.Log(saveFile);
         form.AddField("model", saveJSON);
         form.AddBinaryData("screenshot", bytes, "screenShot_" + name + ".png", "image/png");
+        form.AddField("public", PublicPlayground.ToString().ToLower());
 
         //Debug.Log("Saving: Name: " + name + " User: " + UserId + " Model: " + saveFile);
         Debug.Log(apiUrl);
