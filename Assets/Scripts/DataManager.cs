@@ -119,6 +119,7 @@ public class DataManager : MonoBehaviour {
             preexistingPlayground = true;
             StartCoroutine(WaitTillDownloadedAssets(preexistingPlayground));
             StartCoroutine(LoadSavedPlayground(savedPlaygroundId));
+            StartCoroutine(AddView(UserId, DesignId));
         }
         else {
             StartCoroutine(WaitTillDownloadedAssets(preexistingPlayground));
@@ -130,6 +131,15 @@ public class DataManager : MonoBehaviour {
             CameraPositions.Instance.isTyping = true;
         else
             CameraPositions.Instance.isTyping = false;
+    }
+
+    IEnumerator AddView(string UserId, string DesignId) {
+        WWW www = new WWW(BaseUrlOfApi + "playgrounds/views.php?UserId=" + UserId + "&DesignId=" + DesignId);
+
+        if (!string.IsNullOrEmpty(www.error)) {
+            Debug.LogError("View API call error " + www.error);
+            yield break;
+        }
     }
 
     IEnumerator WaitTillDownloadedAssets(bool isExsitingPlayground) {
@@ -275,6 +285,7 @@ public class DataManager : MonoBehaviour {
 
 
     public IEnumerator SavePlayground(string name, SaveFile saveFile) {
+        yield return new WaitUntil(() => modelBundles.Count == names.Length);
         string saveJSON = JsonUtility.ToJson(saveFile);
         isSaving = true;
 #if UNITY_EDITOR
