@@ -79,6 +79,7 @@ public class DataManager : MonoBehaviour {
         //todo: get ID in web player (eg https://docs.unity3d.com/ScriptReference/Application-absoluteURL.html)
         string userId = "1"; //test user
         int savedPlaygroundId = 0; //not saved
+        string creatorId = "0";
 
         //string url = "http://playgroundideas.endzone.io/app-api/wp-simulate/app.php?userId=1&designId=2";
 
@@ -99,6 +100,12 @@ public class DataManager : MonoBehaviour {
         Debug.Log("Application.absoluteURL: " + url);
 
         var nc = UriHelper.GetQueryString(url);
+
+        if (!String.IsNullOrEmpty(nc["creatorId"]))
+            creatorId = nc["creatorId"];
+
+        Debug.Log("WebGL savedPlaygroundId from URL: " + savedPlaygroundId);
+
         if (!String.IsNullOrEmpty(nc["userId"]))
             userId = nc["userId"];
 
@@ -114,11 +121,18 @@ public class DataManager : MonoBehaviour {
         this.DesignId = savedPlaygroundId.ToString();
 
         //StartCoroutine(LoadUser(userId));
-        if (savedPlaygroundId != 0) {
+        if (creatorId != "0" && savedPlaygroundId != 0) {
+            Debug.Log("Loading public playground");
+            StartCoroutine(WaitTillDownloadedAssets(preexistingPlayground));
+            StartCoroutine(LoadSavedPlayground(creatorId,savedPlaygroundId));
+            StartCoroutine(AddView(creatorId, DesignId));
+            DesignId = "0";
+        }
+        else if (savedPlaygroundId != 0) {
             Debug.Log("Loading saved playground");
             preexistingPlayground = true;
             StartCoroutine(WaitTillDownloadedAssets(preexistingPlayground));
-            StartCoroutine(LoadSavedPlayground(savedPlaygroundId));
+            StartCoroutine(LoadSavedPlayground(this.UserId, savedPlaygroundId));
             StartCoroutine(AddView(UserId, DesignId));
         }
         else {
@@ -184,7 +198,7 @@ public class DataManager : MonoBehaviour {
     }
 
 
-    IEnumerator LoadSavedPlayground(int savedPlaygroundId) {
+    IEnumerator LoadSavedPlayground(string UserId, int savedPlaygroundId) {
         string jsonUrl = BaseUrlOfApi + "/playgrounds/get.php?id=" + savedPlaygroundId;
         string json = "";
 
