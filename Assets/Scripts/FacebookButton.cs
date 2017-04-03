@@ -21,7 +21,7 @@ public class FacebookButton : MonoBehaviour {
     public SaveManager save;
 
     [DllImport("__Internal")]
-    private static extern void FacebookLogInCaptureClick(string _contentURL, string _contentTitle, string _contentDesc, string _contentPhoto, FacebookDelegate<IShareResult> _callbackId);
+    private static extern void FacebookLogInCaptureClick(string _contentURL, string _contentTitle, string _contentDesc, string _contentPhoto);
 
     public void UploadImageToFacebook() {
         //FB.LogInWithReadPermissions(perms, AuthCallback);
@@ -37,7 +37,7 @@ public class FacebookButton : MonoBehaviour {
         yield return new WaitUntil(() => DataManager.Instance.isSaving == false);
         Debug.Log("FB called");
         //FB.ShareLink(new Uri("http://staging.playgroundideas.org"), "Playground Ideas", "Create your own playground", new Uri(DataManager.Instance.ScreenShotURL), ShareCallback);
-        FacebookLogInCaptureClick("http://staging.playgroundideas.org", "Playground Ideas", "Create your own playground", DataManager.Instance.ScreenShotURL, ShareCallback);
+        FacebookLogInCaptureClick("http://staging.playgroundideas.org", "Playground Ideas", "Create your own playground", DataManager.Instance.ScreenShotURL);
     }
 
     public void PostToFacebook() {

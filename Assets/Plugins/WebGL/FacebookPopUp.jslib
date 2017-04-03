@@ -1,13 +1,12 @@
 var FacebookPopUp = {
-  FacebookLogInCaptureClick: function(_contentURL, _contentTitle, _contentDesc, _contentPhoto, _callbackId) {
+  FacebookLogInCaptureClick: function(_contentURL, _contentTitle, _contentDesc, _contentPhoto) {
 	var contentURL = Pointer_stringify(_contentURL);
 	var contentTitle = Pointer_stringify(_contentTitle);
 	var contentDesc = Pointer_stringify(_contentDesc);
 	var contentPhoto = Pointer_stringify(_contentPhoto);
- 	var callbackId = Pointer_stringify(_callbackId);
  	console.log("Logging Facebook with permissions " + permissions);
      var OpenFacebookLoginPopup = function() {
- 		FBUnity.sharelink(contentURL, contentTitle, contentDesc, contentPhoto, callbackId);
+ 		FBUnity.Sharelink(contentURL, contentTitle, contentDesc, contentPhoto);
  		document.getElementById('canvas').removeEventListener('click', OpenFacebookLoginPopup);
      };
      document.getElementById('canvas').addEventListener('click', OpenFacebookLoginPopup, false);
