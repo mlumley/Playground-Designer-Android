@@ -6,7 +6,7 @@ var FacebookPopUp = {
 	var contentPhoto = Pointer_stringify(_contentPhoto);
  	console.log("Logging Facebook with permissions " + permissions);
      var OpenFacebookLoginPopup = function() {
- 		FBUnity.Sharelink(contentURL, contentTitle, contentDesc, contentPhoto);
+ 		FBUnity.ShareLink(contentURL, contentTitle, contentDesc, contentPhoto);
  		document.getElementById('canvas').removeEventListener('click', OpenFacebookLoginPopup);
      };
      document.getElementById('canvas').addEventListener('click', OpenFacebookLoginPopup, false);
