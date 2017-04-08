@@ -528,7 +528,7 @@ public class DataManager : MonoBehaviour {
         // Load the AssetBundle file from Cache if it exists with the same version or download and store it in the cache
         //using (WWW www = WWW.LoadFromCacheOrDownload(BaseUrlOfApi + "wp-simulate/models", 1)) {
         Debug.Log("Started downloading " + bundleName);
-        using (WWW www = new WWW("http://staging.playgroundideas.org/designer/" + "AssetBundles/" + bundleName)) {
+        using (WWW www = new WWW("http://playgroundideas.org/designer/" + "AssetBundles/" + bundleName)) {
             yield return www;
             Debug.Log("Finished downloading " + bundleName);
             if (www.error != null)
@@ -542,7 +542,7 @@ public class DataManager : MonoBehaviour {
             yield return null;
         //Debug.Log("Started downloading " + bundleName);
         // Increment version number with new assest bundles
-        var www = WWW.LoadFromCacheOrDownload("http://staging.playgroundideas.org/designer/" + "AssetBundles/" + bundleName, 9);
+        var www = WWW.LoadFromCacheOrDownload("http://playgroundideas.org/designer/" + "AssetBundles/" + bundleName, 9);
         yield return www;
         if (!string.IsNullOrEmpty(www.error)) {
             Debug.Log(www.error);

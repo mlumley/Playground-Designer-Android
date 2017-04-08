@@ -36,8 +36,8 @@ public class FacebookButton : MonoBehaviour {
     IEnumerator Post() {
         yield return new WaitUntil(() => DataManager.Instance.isSaving == false);
         Debug.Log("FB called");
-        FB.ShareLink(new Uri("http://staging.playgroundideas.org"), "Playground Ideas", "Create your own playground", new Uri(DataManager.Instance.ScreenShotURL), ShareCallback);
-        //FacebookLogInCaptureClick("http://staging.playgroundideas.org", "Playground Ideas", "Create your own playground", DataManager.Instance.ScreenShotURL);
+        FB.ShareLink(new Uri("http://playgroundideas.org"), "Playground Ideas", "Create your own playground", new Uri(DataManager.Instance.ScreenShotURL), ShareCallback);
+        //FacebookLogInCaptureClick("http://playgroundideas.org", "Playground Ideas", "Create your own playground", DataManager.Instance.ScreenShotURL);
     }
 
     public void PostToFacebook() {
