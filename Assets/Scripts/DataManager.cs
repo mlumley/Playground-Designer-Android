@@ -27,9 +27,10 @@ public class DataManager : MonoBehaviour {
 
     public string NameOfJsonFile;
     public string BaseUrlOfApi;
+    public string BaseUrlOfDesigner;
     public string UserId;
     public string DesignId;
-    private static bool publicPlayground;
+    private static bool publicPlayground = false;
     public ToogleSwitch playgroundSwitch;
 
     public static List<DesignInfo> objectInfoList;
@@ -94,8 +95,9 @@ public class DataManager : MonoBehaviour {
             StartCoroutine(DownloadAndCache(name));
         }
 
+#if UNITY_EDITOR
 
-#if UNITY_WEBGL
+#elif UNITY_WEBGL
         string url = Application.absoluteURL;
         Debug.Log("Application.absoluteURL: " + url);
 
@@ -115,6 +117,14 @@ public class DataManager : MonoBehaviour {
             savedPlaygroundId = Convert.ToInt16(nc["designId"]);
 
         Debug.Log("WebGL savedPlaygroundId from URL: " + savedPlaygroundId);
+
+        string[] stringSeparators = new string[] {"designer"};
+        BaseUrlOfApi = url.Split(stringSeparators, StringSplitOptions.None)[0];
+        BaseUrlOfApi = BaseUrlOfApi + "designer_api/";
+        BaseUrlOfDesigner = url.Split(stringSeparators, StringSplitOptions.None)[0];
+        BaseUrlOfDesigner = BaseUrlOfDesigner + "designer/";
+        Debug.Log("Base URL of API is:" + BaseUrlOfApi);
+        Debug.Log("Base URL of designer is:" + BaseUrlOfDesigner);
 #endif
 
         this.UserId = userId;
@@ -211,19 +221,22 @@ public class DataManager : MonoBehaviour {
         }
 
         json = www.text;
+        Debug.Log(json);
 
         JSONNode N = JSON.Parse(json);
 
-        if(N["public"] == "True") {
+        Debug.Log(N["playground"]["public"]);
+
+        if (N["playground"]["public"].AsBool == true) {
             PublicPlayground = true;
         }
-        else if (N["public"] == "False") {
+        else if (N["playground"]["public"].AsBool == false) {
             PublicPlayground = false;
         }
         else {
             Debug.Log("Error public field in save file is not a boolean");
         }
-        playgroundSwitch.UpdateToggle();
+        playgroundSwitch.SetToggle(PublicPlayground);
 
 
         string imageUrl = BaseUrlOfApi + "/images/get.php?userId=" + UserId + "&designId=" + savedPlaygroundId;
@@ -528,7 +541,7 @@ public class DataManager : MonoBehaviour {
         // Load the AssetBundle file from Cache if it exists with the same version or download and store it in the cache
         //using (WWW www = WWW.LoadFromCacheOrDownload(BaseUrlOfApi + "wp-simulate/models", 1)) {
         Debug.Log("Started downloading " + bundleName);
-        using (WWW www = new WWW("http://playgroundideas.org/designer/" + "AssetBundles/" + bundleName)) {
+        using (WWW www = new WWW(BaseUrlOfDesigner + "AssetBundles/" + bundleName)) {
             yield return www;
             Debug.Log("Finished downloading " + bundleName);
             if (www.error != null)
@@ -542,7 +555,7 @@ public class DataManager : MonoBehaviour {
             yield return null;
         //Debug.Log("Started downloading " + bundleName);
         // Increment version number with new assest bundles
-        var www = WWW.LoadFromCacheOrDownload("http://playgroundideas.org/designer/" + "AssetBundles/" + bundleName, 9);
+        var www = WWW.LoadFromCacheOrDownload(BaseUrlOfDesigner + "AssetBundles/" + bundleName, 9);
         yield return www;
         if (!string.IsNullOrEmpty(www.error)) {
             Debug.Log(www.error);

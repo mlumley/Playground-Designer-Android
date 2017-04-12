@@ -8,12 +8,17 @@ public class ToogleSwitch : MonoBehaviour {
         gameObject.GetComponent<Toggle>().isOn = DataManager.Instance.PublicPlayground;
     }
 
-    public void UpdateToggle() {
-        gameObject.GetComponent<Toggle>().isOn = DataManager.Instance.PublicPlayground;
+    public void SetToggle(bool value) {
+        gameObject.GetComponent<Toggle>().isOn = value;
     } 
 
     public void toggle() {
-        DataManager.Instance.PublicPlayground = !DataManager.Instance.PublicPlayground;
-        gameObject.GetComponent<Toggle>().isOn = DataManager.Instance.PublicPlayground;
+        Debug.Log(gameObject.GetComponent<Toggle>().isOn);
+        if (gameObject.GetComponent<Toggle>().isOn) {
+            DataManager.Instance.PublicPlayground = true;
+        }
+        else {
+            DataManager.Instance.PublicPlayground = false;
+        }
     }
 }
