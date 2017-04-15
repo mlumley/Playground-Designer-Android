@@ -86,7 +86,7 @@ public class DataManager : MonoBehaviour {
 
         Debug.Log("Initial userId: " + userId + ", savedPlaygroundId: " + savedPlaygroundId);
 
-        string[] names1 = { "balance", "bridges", "buildings", "climbing", "cubbies", "furniture", "ground_cover", "hills", "imaginative", "ladders", "monkey_bars", "musical", "natural", "other", "poles", "rocks", "sandpits", "seesaws", "slides", "sports", "swings", "trees", "tunnels" };
+        string[] names1 = { "balance", "bridges", "buildings", "climbing", "cubbies", "furniture", "ground_cover", "hills", "imaginative", "ladders", "monkey_bars", "musical", "natural", "other", "people","poles", "rocks", "sandpits", "seesaws", "slides", "sports", "swings", "trees", "tunnels" };
         names = names1;
 
 
@@ -555,7 +555,7 @@ public class DataManager : MonoBehaviour {
             yield return null;
         //Debug.Log("Started downloading " + bundleName);
         // Increment version number with new assest bundles
-        var www = WWW.LoadFromCacheOrDownload(BaseUrlOfDesigner + "AssetBundles/" + bundleName, 9);
+        var www = WWW.LoadFromCacheOrDownload(BaseUrlOfDesigner + "AssetBundles/" + bundleName, 10);
         yield return www;
         if (!string.IsNullOrEmpty(www.error)) {
             Debug.Log(www.error);

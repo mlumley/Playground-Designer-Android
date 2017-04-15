@@ -167,5 +167,12 @@
 	{"Name":"Swing Seat Tire Metal","ImageName":"Swing_Seat_Tire_Metal","ModelName":"Swing_Seat_Tire_Metal","MainCategory":"Elements","Category":["Imaginative"]},
 	{"Name":"Shop Front","ImageName":"ShopFront","ModelName":"ShopFront","MainCategory":"Elements","Category":["Cubbies / Platforms / Shops"]},
 	{"Name":"Rebar Igloo","ImageName":"Rebar_Igloo","ModelName":"Rebar_Igloo","MainCategory":"Elements","Category":["Imaginative"]},
-	{"Name":"Motorbike","ImageName":"Motorbike","ModelName":"Motorbike","MainCategory":"Elements","Category":["Imaginative"]}
+	{"Name":"Motorbike","ImageName":"Motorbike","ModelName":"Motorbike","MainCategory":"Elements","Category":["Imaginative"]},
+	{"Name":"Boy with Jacket","ImageName":"Boy_With_Jacket","ModelName":"Boy_With_Jacket","MainCategory":"Elements","Category":["People"]},
+	{"Name":"Boy with Red Sweater","ImageName":"Boy_With_Red_Sweater","ModelName":"Boy_With_Red_Sweater","MainCategory":"Elements","Category":["People"]},
+	{"Name":"Girl with Backpack","ImageName":"Girl_with_Backpack","ModelName":"Girl_with_Backpack","MainCategory":"Elements","Category":["People"]},
+	{"Name":"Man in Button Up","ImageName":"Man_in_Button_Up","ModelName":"Man_in_Button_Up","MainCategory":"Elements","Category":["People"]},
+	{"Name":"Man in Green Pants","ImageName":"Man_in_Green_Pants","ModelName":"Man_in_Green_Pants","MainCategory":"Elements","Category":["People"]},
+	{"Name":"Woman in Skirt","ImageName":"Woman_in_Skirt","ModelName":"Woman_in_Skirt","MainCategory":"Elements","Category":["People"]},
+	{"Name":"Woman in Yellow Sweater","ImageName":"Woman_in_Yellow_Sweater","ModelName":"Woman_in_Yellow_Sweater","MainCategory":"Elements","Category":["People"]}
 ]}
