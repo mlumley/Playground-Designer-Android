@@ -90,10 +90,7 @@ public class DataManager : MonoBehaviour {
         names = names1;
 
 
-        foreach (string name in names) {
-            //StartCoroutine(Download(name));
-            StartCoroutine(DownloadAndCache(name));
-        }
+
 
 #if UNITY_EDITOR
 
@@ -126,6 +123,10 @@ public class DataManager : MonoBehaviour {
         Debug.Log("Base URL of API is:" + BaseUrlOfApi);
         Debug.Log("Base URL of designer is:" + BaseUrlOfDesigner);
 #endif
+        foreach (string name in names) {
+            //StartCoroutine(Download(name));
+            StartCoroutine(DownloadAndCache(name));
+        }
 
         this.UserId = userId;
         this.DesignId = savedPlaygroundId.ToString();
