@@ -5,9 +5,12 @@ using System.Collections.Generic;
 using SimpleJSON;
 using Assets.Scripts.Classes;
 using System;
-using System.IO;
 using System.Runtime.InteropServices;
 
+
+/// <summary>
+/// Handles reading and save data for playgrounds and the model manifest
+/// </summary>
 public class DataManager : MonoBehaviour {
 
     protected static DataManager _instance;
@@ -28,10 +31,10 @@ public class DataManager : MonoBehaviour {
     public string NameOfJsonFile;
     public string BaseUrlOfApi;
     public string BaseUrlOfDesigner;
-    public string UserId;
-    public string DesignId;
+    string UserId;
+    string DesignId;
     private static bool publicPlayground = false;
-    public ToogleSwitch playgroundSwitch;
+    public PublicPrivatePlaygrounds playgroundSwitch;
 
     public static List<DesignInfo> objectInfoList;
 
@@ -40,18 +43,14 @@ public class DataManager : MonoBehaviour {
     public Dropdown landscapeDropdown;
 
     public static List<AssetBundle> modelBundles = new List<AssetBundle>();
-    public static string[] names;
+    static string[] names = { "balance", "bridges", "buildings", "climbing", "cubbies", "furniture", "ground_cover", "hills", "imaginative", "ladders", "monkey_bars", "musical", "natural", "other", "people", "poles", "rocks", "sandpits", "seesaws", "slides", "sports", "swings", "trees", "tunnels" };
 
     private bool preexistingPlayground = false;
 
     public GameObject infoScreen;
 
     private string screenShotURL;
-    public bool isSaving = false;
-
-    [DllImport("__Internal")]
-    private static extern void Resize();
-
+    bool isSaving = false;
 
     public InputField playgroundName;
     public InputField width;
@@ -73,27 +72,28 @@ public class DataManager : MonoBehaviour {
         }
     }
 
+    public bool IsSaving {
+        get {
+            return isSaving;
+        }
+        set {
+            isSaving = value;
+        }
+    }
+
 
     void Start() {
+        // Load from model manifest
         StartCoroutine(LoadData());
-
-        //todo: get ID in web player (eg https://docs.unity3d.com/ScriptReference/Application-absoluteURL.html)
         string userId = "1"; //test user
         int savedPlaygroundId = 0; //not saved
         string creatorId = "0";
-
-        //string url = "http://playgroundideas.endzone.io/app-api/wp-simulate/app.php?userId=1&designId=2";
-
         Debug.Log("Initial userId: " + userId + ", savedPlaygroundId: " + savedPlaygroundId);
-
-        string[] names1 = { "balance", "bridges", "buildings", "climbing", "cubbies", "furniture", "ground_cover", "hills", "imaginative", "ladders", "monkey_bars", "musical", "natural", "other", "people","poles", "rocks", "sandpits", "seesaws", "slides", "sports", "swings", "trees", "tunnels" };
-        names = names1;
-
-
-
 
 #if UNITY_EDITOR
 
+// If deployed on to webgl get the user id and design id from the url
+// also get the address to the api and the designer app itself
 #elif UNITY_WEBGL
         string url = Application.absoluteURL;
         Debug.Log("Application.absoluteURL: " + url);
@@ -123,15 +123,16 @@ public class DataManager : MonoBehaviour {
         Debug.Log("Base URL of API is:" + BaseUrlOfApi);
         Debug.Log("Base URL of designer is:" + BaseUrlOfDesigner);
 #endif
+        // Download all assetbundles
         foreach (string name in names) {
-            //StartCoroutine(Download(name));
             StartCoroutine(DownloadAndCache(name));
         }
 
         this.UserId = userId;
         this.DesignId = savedPlaygroundId.ToString();
 
-        //StartCoroutine(LoadUser(userId));
+        // If a creatorId is provided download that playground and set the designId to 0
+        // so that when the users saves the playground is saved to their own account
         if (creatorId != "0" && savedPlaygroundId != 0) {
             Debug.Log("Loading public playground");
             StartCoroutine(WaitTillDownloadedAssets(preexistingPlayground));
@@ -139,6 +140,7 @@ public class DataManager : MonoBehaviour {
             StartCoroutine(AddView(creatorId, DesignId));
             DesignId = "0";
         }
+        // If the designId is provided load the saved playground
         else if (savedPlaygroundId != 0) {
             Debug.Log("Loading saved playground");
             preexistingPlayground = true;
@@ -146,18 +148,27 @@ public class DataManager : MonoBehaviour {
             StartCoroutine(LoadSavedPlayground(this.UserId, savedPlaygroundId));
             StartCoroutine(AddView(UserId, DesignId));
         }
+        // Otherwise wait until all models are downloaded before leting the user use the app
         else {
             StartCoroutine(WaitTillDownloadedAssets(preexistingPlayground));
         }
     }
 
     void Update() {
+
+        // If the user has a text box selected disable WASD input for camera movement
         if (playgroundName.isFocused || width.isFocused || height.isFocused)
             CameraPositions.Instance.isTyping = true;
         else
             CameraPositions.Instance.isTyping = false;
     }
 
+    /// <summary>
+    /// Increments the view count for a playground so that it shows at the top of the
+    /// community designs section of the website
+    /// </summary>
+    /// <param name="UserId">User ID of the playground owner</param>
+    /// <param name="DesignId">Design ID of the playground</param>
     IEnumerator AddView(string UserId, string DesignId) {
         WWW www = new WWW(BaseUrlOfApi + "playgrounds/views.php?UserId=" + UserId + "&DesignId=" + DesignId);
 
@@ -167,6 +178,12 @@ public class DataManager : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Disable the Ready button on the info screen when the app is loaded
+    /// until all assetbundles have been downloaded
+    /// </summary>
+    /// <param name="isExsitingPlayground">Is the app opening a saved playground</param>
+    /// <returns></returns>
     IEnumerator WaitTillDownloadedAssets(bool isExsitingPlayground) {
         Button okButton = infoScreen.GetComponentInChildren<Button>();
 
@@ -183,32 +200,11 @@ public class DataManager : MonoBehaviour {
         okButton.GetComponentInChildren<Text>().text = "Ready!";
     }
 
-    // Not used
-    public IEnumerator GetScreenShotURL() {
-        yield return new WaitUntil(() => isSaving == false);
-        string jsonUrl = BaseUrlOfApi + "/playgrounds/get.php?userId=" + UserId;
-        string json = "";
-
-        WWW www = new WWW(jsonUrl);
-        yield return www;
-
-        if (!string.IsNullOrEmpty(www.error)) {
-            Debug.LogError("LoadUser API call error (" + jsonUrl + "): " + www.error);
-            yield break;
-        }
-
-        json = www.text;
-
-        JSONNode N = JSON.Parse(json);
-        Debug.Log("Full Json returned from API: " + json);
-
-
-
-        yield return "http://playgroundideas.endzone.io/app-api/uploads/" + N["screenShot"];
-        Debug.Log("ScreenshotURL is " + DataManager.Instance.ScreenShotURL);
-    }
-
-
+    /// <summary>
+    /// Load a saved playground into the world
+    /// </summary>
+    /// <param name="UserId">User ID of the playground owner</param>
+    /// <param name="savedPlaygroundId">Design ID of the playground</param>
     IEnumerator LoadSavedPlayground(string UserId, int savedPlaygroundId) {
         string jsonUrl = BaseUrlOfApi + "/playgrounds/get.php?id=" + savedPlaygroundId;
         string json = "";
@@ -250,9 +246,9 @@ public class DataManager : MonoBehaviour {
             yield break;
         }
 
-        json = imageWWW.text;
+        imageJSON = imageWWW.text;
 
-        JSONNode N2 = JSON.Parse(json);
+        JSONNode N2 = JSON.Parse(imageJSON);
 
         if (N2["status"].Value != "true") {
             Debug.LogError("Playground not found.");
@@ -276,46 +272,23 @@ public class DataManager : MonoBehaviour {
         }
         //Debug.Log(images.Count);
         LoadSaveFile(N["playground"]["name"], N["playground"]["model"], images.ToArray());
-
-
-
-
-
     }
 
-    IEnumerator LoadUser(string userId) {
-        string jsonUrl = BaseUrlOfApi + "/users/get.php?id=" + userId;
-        string json = "";
-
-        WWW www = new WWW(jsonUrl);
-        yield return www;
-
-        if (!string.IsNullOrEmpty(www.error)) {
-            Debug.Log("LoadUser API call error (" + jsonUrl + "): " + www.error);
-            yield break;
-        }
-
-        json = www.text;
-
-        JSONNode N = JSON.Parse(json);
-
-        if (N["status"].Value != "true") {
-            //todo: This is required in the Web version, how do we handle the error when user ID is not passed?
-            Debug.LogError("User not found.");
-            yield break;
-        }
-
-        User user = User.Parse(N);
-        Debug.Log("User found: " + user.Name);
-
-
-    }
-
-
+    /// <summary>
+    /// Save a playground and upload it to the api to be stored
+    /// </summary>
+    /// <param name="name">Name of the playground</param>
+    /// <param name="saveFile">Savefile contain the data to be saved</param>
     public IEnumerator SavePlayground(string name, SaveFile saveFile) {
+        // Make sure all assetbundles have been downloaded
         yield return new WaitUntil(() => modelBundles.Count == names.Length);
+
+        // Convert savefile to JSON
         string saveJSON = JsonUtility.ToJson(saveFile);
         isSaving = true;
+
+        // Take a screenshot
+        // In webgl the UI is hidden for the screenshot
 #if UNITY_EDITOR
         Debug.Log("WaitForEndOfFrame doesn't work in editor");
 #elif UNITY_WEBGL
@@ -326,8 +299,6 @@ public class DataManager : MonoBehaviour {
 
         string apiUrl = BaseUrlOfApi + "/playgrounds/save.php";
         string json = "";
-
-
         int width = Screen.width;
         int height = Screen.height;
         Texture2D tex = new Texture2D(width, height, TextureFormat.RGB24, false);
@@ -338,29 +309,24 @@ public class DataManager : MonoBehaviour {
         byte[] bytes = tex.EncodeToPNG();
         Destroy(tex);
 
+        // Enable the UI again
         GameObject.Find("Canvas").GetComponent<Canvas>().enabled = true;
 
-        // Comment out for deploy
-        //Debug.Log(Application.dataPath + "/SavedScreen.png");
-        //File.WriteAllBytes(Application.dataPath + "/SavedScreen.png", bytes);
-
-        // Create a Web Form
+        // Create a Web Form to submit saved data
         WWWForm form = new WWWForm();
         form.AddField("userId", UserId);
         form.AddField("name", name);
         if (preexistingPlayground) {
-            Debug.Log("DesignID " + DesignId);
             form.AddField("designId", DesignId);
         }
         else {
             preexistingPlayground = true;
         }
-        //form.AddBinaryData("fileUpload", bytes, "screenShot.png", "image/png");
-        //Debug.Log(saveFile);
         form.AddField("model", saveJSON);
         form.AddBinaryData("screenshot", bytes, "screenShot_" + name + ".png", "image/png");
         form.AddField("public", PublicPlayground.ToString().ToLower());
 
+        //Send the form to the api
         //Debug.Log("Saving: Name: " + name + " User: " + UserId + " Model: " + saveFile);
         Debug.Log(apiUrl);
         WWW www = new WWW(apiUrl, form);
@@ -371,45 +337,23 @@ public class DataManager : MonoBehaviour {
             yield break;
         }
 
+        // Response from server
         json = www.text;
         Debug.Log(json);
 
         JSONNode N = JSON.Parse(json);
 
-        DesignId = N["playground"]["id"];
-        screenShotURL = N["playground"]["screenshot_Url"];
-        //Debug.Log("ScreenshotURL is " + DataManager.Instance.ScreenShotURL);
-
-
+        // Check if server had success
         if (N["status"].Value != "true") {
             Debug.LogError("Error with saving.");
             yield break;
         }
 
-        //HAVE TO POST IMAGES HERE CAUSE WE NEED DESIGNID
-        /*  Save Image: /images/save.php
-            Post vars: userId, designId (playground id), name (optional), image (image file)
-        */
-
-        // Delete exisiting photos
-        /*string imageUrl = BaseUrlOfApi + "/images/get.php?userId=" + UserId + "&designId=" + DesignId;
-        string imageJSON = "";
-
-        WWW imageOneWWW = new WWW(imageUrl);
-        yield return imageOneWWW;
-        if (!string.IsNullOrEmpty(imageOneWWW.error)) {
-            Debug.Log("SavePlayground API call error: " + imageOneWWW.error);
-            yield break;
-        }
-
-        imageJSON = imageOneWWW.text;
-
-        JSONNode N3 = JSON.Parse(imageJSON);
-        for(int i = 0; i < N3["images"].Count; i++) {
-            WWW delete = new WWW(BaseUrlOfApi + "/images/delete.php?userId=" + UserId + "&designId=" + DesignId + "&imageId=" + i);
-            yield return delete;
-            Debug.Log(delete.text);
-        }*/
+        // Get the design id the server has assigned to the playground
+        DesignId = N["playground"]["id"];
+        // Get the screenshot URL the server has assigned
+        screenShotURL = N["playground"]["screenshot_Url"];
+        //Debug.Log("ScreenshotURL is " + DataManager.Instance.ScreenShotURL);
 
         // Move out into own function
         // Upload photos
@@ -445,8 +389,9 @@ public class DataManager : MonoBehaviour {
         //Debug.Log(isSaving);
     }
 
-
-
+    /// <summary>
+    /// Loads data from the model manifest
+    /// </summary>
     IEnumerator LoadData() {
         if (string.IsNullOrEmpty(NameOfJsonFile)) {
             Debug.LogError("You havent specified a json file to load.");
@@ -466,8 +411,8 @@ public class DataManager : MonoBehaviour {
         }
 
         JSONNode N = JSON.Parse(result);
-        //JsonData data = JsonUtility.FromJson<JsonData>(result);
 
+        // Add all objects to either elements and landscape lists
         objectInfoList = new List<DesignInfo>();
 
         List<string> objectCatagories = new List<string>();
@@ -475,18 +420,8 @@ public class DataManager : MonoBehaviour {
 
         Debug.Log("Line is " + N);
         for (int i = 0; i < N["Objects"].Count; i++) {
-            //foreach(DesignInfo info in data.data) {
             DesignInfo info = new DesignInfo(N["Objects"][i]["Name"].Value, N["Objects"][i]["ImageName"].Value, N["Objects"][i]["ModelName"].Value, N["Objects"][i]["MainCategory"].Value, N["Objects"][i]["Category"].ToString());
             objectInfoList.Add(info);
-            //Debug.Log(info.Category[0].ToString());
-            /*if (N["Objects"][i]["MainCategory"].Value == "Elements" && !objectCatagories.Contains(N["Objects"][i]["Category"].Value))
-                objectCatagories.Add(N["Objects"][i]["Category"].Value);
-            else if (N["Objects"][i]["MainCategory"].Value == "Landscape" && !landscapeCatagories.Contains(N["Objects"][i]["Category"].Value))
-                landscapeCatagories.Add(N["Objects"][i]["Category"].Value);*/
-            //Debug.Log(model);
-            //DesignInfo info = JsonUtility.FromJson<DesignInfo>(model);
-            //Debug.Log(N["Objects"][i]["Category"]);
-            //objectInfoList.Add(N["Objects"][i]);
             foreach (string category in info.Category) {
                 if (info.MainCategory == "Elements" && !objectCatagories.Contains(category)) {
                     objectCatagories.Add(category);
@@ -500,15 +435,18 @@ public class DataManager : MonoBehaviour {
 
         objectInfoList.Sort();
 
-        //Debug.Log(objectCatagories.Count);
-
         UIManager.Instance.SetObjectData(objectInfoList, "Elements", "None");
         UIManager.Instance.SetLandscapeData(objectInfoList, "Landscape", "None");
         objectDropdown.GetComponent<DropdownSorter>().setCatagories(objectCatagories);
         landscapeDropdown.GetComponent<DropdownSorter>().setCatagories(landscapeCatagories);
     }
 
-
+    /// <summary>
+    /// Load models in the save file into the world at their positions
+    /// </summary>
+    /// <param name="name">Name is the playground</param>
+    /// <param name="saveJSON">Text of the JSON file</param>
+    /// <param name="saveImages">Images that were savedin the playground</param>
     public void LoadSaveFile(string name, string saveJSON, PhotoData[] saveImages) {
         SaveFile saveFile = JsonUtility.FromJson<SaveFile>(saveJSON);
         //Debug.Log(name);
@@ -537,20 +475,11 @@ public class DataManager : MonoBehaviour {
         }
     }
 
-    // Not in use
-    IEnumerator Download(string bundleName) {
-        // Load the AssetBundle file from Cache if it exists with the same version or download and store it in the cache
-        //using (WWW www = WWW.LoadFromCacheOrDownload(BaseUrlOfApi + "wp-simulate/models", 1)) {
-        Debug.Log("Started downloading " + bundleName);
-        using (WWW www = new WWW(BaseUrlOfDesigner + "AssetBundles/" + bundleName)) {
-            yield return www;
-            Debug.Log("Finished downloading " + bundleName);
-            if (www.error != null)
-                throw new Exception("WWW download had an error:" + www.error);
-            modelBundles.Add(www.assetBundle);
-        }
-    }
-
+    /// <summary>
+    /// Download and store the assetbundle so that it is quicker to load to the
+    /// next time the app is loaded
+    /// </summary>
+    /// <param name="bundleName">Assetbundle to be downloaded</param>
     IEnumerator DownloadAndCache(string bundleName) {
         while (!Caching.ready)
             yield return null;

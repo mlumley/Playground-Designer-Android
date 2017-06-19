@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.EventSystems;
-using System;
 
+/// <summary>
+/// Override PointerDown and OnDrag for models
+/// </summary>
 public class ModelSelect : MonoBehaviour, IPointerDownHandler, IDragHandler {
     public void OnDrag(PointerEventData eventData) { }
 

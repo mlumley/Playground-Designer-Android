@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 using System.Collections.Generic;
 
+/// <summary>
+/// Handeles displaying the content of the model panels
+/// as well as fullscreen mode
+/// </summary>
 public class UIManager : MonoBehaviour {
 
     protected static UIManager _instance;
@@ -22,16 +25,17 @@ public class UIManager : MonoBehaviour {
 
     public Transform ObjectScrollViewContent;
     public Transform LandscapeScrollViewContent;
-    public GameObject ObjectSelectionPanel;
-
-    public Animator DesignButtonAnimator;
-    public Animator DesignPanelAnimator;
-
-    public GameObject DesignPanelObj;
-
     public GameObject FullscreenButton;
     public Font openSans;
 
+
+    /// <summary>
+    /// Populates the elements panel with models corresponding to the
+    /// selected category
+    /// </summary>
+    /// <param name="objects">Complete list of all models</param>
+    /// <param name="mainCategory">Elements or Landscape models</param>
+    /// <param name="catagory">Category to view</param>
     public void SetObjectData(List<DesignInfo> objects, string mainCategory, string catagory) {
 
         foreach(Transform child in ObjectScrollViewContent) {
@@ -52,6 +56,13 @@ public class UIManager : MonoBehaviour {
 
     }
 
+    /// <summary>
+    /// Populates the landscape panel with models corresponding to the
+    /// selected category
+    /// </summary>
+    /// <param name="objects">Complete list of all models</param>
+    /// <param name="mainCategory">Elements or Landscape models</param>
+    /// <param name="catagory">Category to view</param>
     public void SetLandscapeData(List<DesignInfo> objects, string mainCategory, string catagory) {
 
         foreach (Transform child in LandscapeScrollViewContent) {
@@ -72,42 +83,20 @@ public class UIManager : MonoBehaviour {
 
     }
 
-
-    #region DESIGN PANEL 
-
-    public void BringOutDesignButton() {
-        DesignButtonAnimator.SetBool("BringIn", true);
-
-        Invoke("BringInDesignPanel", 0.1f);
-    }
-
-    void BringInDesignPanel() {
-        DesignPanelAnimator.SetBool("BringIn", true);
-    }
-
-    public void DismissDesignPanel() {
-        DesignPanelObj.SetActive(false);
-
-        //		DesignPanelAnimator.SetBool ("BringIn", false);
-        //
-        //		Invoke ("DismissDesignButton", 0.3f);
-    }
-
-    void DismissDesignButton() {
-        DesignButtonAnimator.SetBool("BringIn", false);
-    }
-
-    #endregion
-
+    /// <summary>
+    /// Toggles fullscreen mode and called a JS method when running
+    /// in webgl to resize the canvas to fit the screen
+    /// </summary>
     public void ToggleFullScreen() {
         Screen.fullScreen = !Screen.fullScreen;
         Application.ExternalCall("resize_canvas");
     }
 
     void Update() {
+        // Swap the fullscreen icon depending on what mode we're in
         if(Screen.fullScreen)
-            FullscreenButton.GetComponent<ShowHidePanelsController>().ChangeSprite(2);
+            FullscreenButton.GetComponent<SpriteSwapManager>().ChangeSprite(2);
         else if(!Screen.fullScreen)
-            FullscreenButton.GetComponent<ShowHidePanelsController>().ChangeSprite(1);
+            FullscreenButton.GetComponent<SpriteSwapManager>().ChangeSprite(1);
     }
 }

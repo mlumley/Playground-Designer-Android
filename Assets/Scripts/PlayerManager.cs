@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using System;
 
+/// <summary>
+/// Handles loading models, rotating the camera and moving models
+/// </summary>
 public class PlayerManager : MonoBehaviour {
 
     protected static PlayerManager _instance;
@@ -29,10 +31,6 @@ public class PlayerManager : MonoBehaviour {
 
     public bool isObjSelected = false;
 
-    private float doubleClickTime = .4f;
-    private float lastClickTime = -10f;
-
-    private bool HitRotateCirlce = false;
     private Vector3 RotateCircleHitPreviousPoint;
 
     [HideInInspector]
@@ -60,15 +58,8 @@ public class PlayerManager : MonoBehaviour {
     public GameObject ToolTip;
 
     void Update() {
-
-
-
         // Selected an object and deselect when not clicking on an object
         if (Input.GetMouseButtonDown(0)) {
-            //.Debug.Log("Mouse Down");
-            /*RaycastHit hitInfo = new RaycastHit();
-            bool hit = Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo);*/
-
             // Select the smallest object
             RaycastHit[] hits;
             hits = Physics.RaycastAll(Camera.main.ScreenPointToRay(Input.mousePosition), Mathf.Infinity);
@@ -90,7 +81,7 @@ public class PlayerManager : MonoBehaviour {
             }
 
 
-            // Check if we hit the UI
+            // Check if we hit the UI, delete button or scale slider
             PointerEventData cursor = new PointerEventData(EventSystem.current);
             cursor.position = Input.mousePosition;
             List<RaycastResult> objectsHit = new List<RaycastResult>();
@@ -113,34 +104,26 @@ public class PlayerManager : MonoBehaviour {
                 }
             }
 
+            // We only hit a model
             if (hit && !hitUI && !hitDelete && !hitSlider) {
-                /*if (currentObject) {
-                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                    RaycastHit groundHit = new RaycastHit();
-                    if (Physics.Raycast(ray, out groundHit, Mathf.Infinity, 1 << LayerMask.NameToLayer("GridCollider"))) {
-                        if (RotateCirclesRenderer.Instance.HitRotateCircleCheck(groundHit.point)) {
-                            Debug.Log("Hit rotation");
-                            rotateObject = true;
-                        }
-                    }
-                }*/
+                // Hit rotation object
                 if(hitInfo.transform.gameObject.tag == "RotateSphere") {
                     Debug.Log("Hit rotation");
                     rotateObject = true;
                     rotationSphere = hitInfo.transform.gameObject;
                 }
+                // Hit an object
                 if ((hitInfo.transform.gameObject.tag == "Models" || hitInfo.transform.gameObject.tag == "PhotoObject") && !rotateObject) {
                     Debug.Log(currentObject);
-                    // Select new object
+                    // Select the object we hit
                     if ((currentObject == null || !currentObject.Equals(hitInfo.transform)) && clickManager.DoubleClick()) {
                         Debug.Log("Selected " + hitInfo.transform.name);
                         currentObject = hitInfo.transform;
                         isObjSelected = true;
-                        //moveMode = true;
                         SelectObject(currentObject.gameObject);
                         ObjectWorldPanel.Instance.SetTarget(currentObject);
                     }
-
+                    // Needed so double clicking doesn't rotate the camera?
                     else if (!currentObject && !clickManager.DoubleClick()) {
                         Debug.Log("Object deselected");
                         SetSelectableToNull();
@@ -148,16 +131,12 @@ public class PlayerManager : MonoBehaviour {
                     // Move selected object
                     else if(isObjSelected && currentObject.Equals(hitInfo.transform)) {
                         Debug.Log("Move Mode");
-                        //SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
                         isObjSelected = true;
                         moveMode = true;
                         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                         RaycastHit groundHit = new RaycastHit();
                         if (Physics.Raycast(ray, out groundHit, Mathf.Infinity, 1 << LayerMask.NameToLayer("GridCollider"))) {
                             Debug.Log("Hit " + groundHit.transform.name);
-                            //Debug.Log("Moving " + hitInfo.transform.name + " to " + groundHit.point);
-                            //currentObject.position = groundHit.point;
-                            //SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
                         }
                     }
                     else {
@@ -170,293 +149,68 @@ public class PlayerManager : MonoBehaviour {
                     Debug.Log("Hit ground");
                     SetSelectableToNull();
                 }
-                /*else if (hitInfo.transform.gameObject.tag == "PhotoObject") {
-                    if ((currentObject == null || !currentObject.Equals(hitInfo.transform)) && clickManager.DoubleClick()) {
-                        Debug.Log("Selected " + hitInfo.transform.name);
-                        currentObject = hitInfo.transform;
-                        isObjSelected = true;
-                        //moveMode = true;
-                        SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
-                        ObjectWorldPanel.Instance.SetTarget(currentObject);
-                    }
-                    else if (isObjSelected) {
-                        Debug.Log("Move Mode");
-                        //SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
-                        isObjSelected = true;
-                        moveMode = true;
-                        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                        RaycastHit groundHit = new RaycastHit();
-                        if (Physics.Raycast(ray, out groundHit, Mathf.Infinity, 1 << LayerMask.NameToLayer("GridCollider"))) {
-                            Debug.Log("Hit " + groundHit.transform.name);
-                            //Debug.Log("Moving " + hitInfo.transform.name + " to " + groundHit.point);
-                            //currentObject.position = groundHit.point;
-                            //SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
-                        }
-                    }
-                }*/
                 else {
-                    Debug.Log("Hit " + hitInfo.transform.gameObject.name);
+                    Debug.Log("Hit unknown object" + hitInfo.transform.gameObject.name);
                 }
             }
             else if (!hitDelete && !hitSlider) {
-                Debug.Log("No hit");
+                Debug.Log("Hit nothing");
                 SetSelectableToNull();
             }
         }
 
+        // With object selected
         if (currentObject) {
             if (hitDelete) {
                 DeleteCurrentObject();
                 SetSelectableToNull();
             }
+            // Rotate Object
             else if (Input.GetMouseButton(0) && rotateObject) {
-                /*Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit groundHit = new RaycastHit();
-                if (Physics.Raycast(ray, out groundHit, Mathf.Infinity, 1 << LayerMask.NameToLayer("GridCollider"))) {
-                    RaycastHit hitInfo5;
-                    if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo5, Mathf.Infinity, 1 << LayerMask.NameToLayer("GridCollider"))) {
-                        float angle = SignedAngleBetween(RotateCircleHitPreviousPoint - currentObject.position, hitInfo5.point - currentObject.position, Vector3.up);
-                        //RotateCirclesRenderer.Instance.SetDegrees(-angle);
-                        SelectorIndicator.Instance.RotateSelectedObject(-angle);
-                        RotateCircleHitPreviousPoint = hitInfo5.point;
-                    }
-                }*/
-
                 //Debug.Log("In rotate");
-
                 RaycastHit hit;
                 if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, 1 << LayerMask.NameToLayer("GridCollider"))) {
                     SelectorIndicator.Instance.RotateSelectedObject(hit.point, rotationSphere);
                 }
             }
+            // Move Object
             else if (Input.GetMouseButton(0) && moveMode) {
                 //Debug.Log("Move Mode");
-                //SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
                 isObjSelected = true;
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit groundHit = new RaycastHit();
                 if (Physics.Raycast(ray, out groundHit, Mathf.Infinity, 1 << LayerMask.NameToLayer("GridCollider"))) {
-                    //Debug.Log("Hit " + groundHit.transform.name);
-                    //Debug.Log("Moving " + hitInfo.transform.name + " to " + groundHit.point);
-                    //Debug.Log("Point " + groundHit.point);
                     currentObject.position = groundHit.point;
-                    //SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
                 }
             }
         }
+        // Rotate Camera
         else if (Input.GetMouseButton(0) && !hitUI && !CameraPositions.Instance.isFP) {
             Rotating();
         }
 
-
+        // Stop rotating object on mouse up
         if (Input.GetMouseButtonUp(0)) {
-            //moveMode = false;
             rotateObject = false;
         }
-
-
-
-        /*if (Input.GetMouseButtonDown(0)) {
-            PointerEventData pointer1 = new PointerEventData(EventSystem.current);
-            pointer1.position = Input.mousePosition;
-            List<RaycastResult> raycastResults1 = new List<RaycastResult>();
-            EventSystem.current.RaycastAll(pointer1, raycastResults1);
-
-            Debug.Log("Mouse Down");
-            if (raycastResults1.Count > 0) {
-                foreach (RaycastResult result in raycastResults1) {
-                    Debug.Log("Hit " + result.gameObject.name);
-                    if (result.gameObject == null) {
-                        break;
-                    }
-
-                    if (result.gameObject.layer == LayerMask.NameToLayer("UI")) {
-                        hasHitUI = true;
-                        break;
-                    }
-                    else if (result.gameObject.layer == LayerMask.NameToLayer("MoveableUI")) {
-                        if (currentObject == null)
-                            continue;
-
-                        if (result.gameObject.transform.position != currentObject.position) {
-                            SetSelectableToNull();
-                            hasHitUI = false;
-                            break;
-                        }
-
-                        hasHitUI = false;
-                        break;
-                    }
-                }
-            }
-            else {
-                Debug.Log("Hit nothing");
-                hasHitUI = false;
-
-                if (currentObject) {
-                    if (MoveableUISelected) {
-                        SetSelectableToNull();
-
-                        return;
-                    }
-
-                    RaycastHit hitInfo4;
-                    if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo4, Mathf.Infinity, 1 << LayerMask.NameToLayer("GridCollider"))) {
-                        if (!MoveableUISelected) {
-                            RaycastHit hitInfo6;
-                            if (RotateCirclesRenderer.Instance.HitRotateCircleCheck(hitInfo4.point)) {
-                                HitRotateCirlce = true;
-                                RotateCircleHitPreviousPoint = hitInfo4.point;
-                            }
-                            else if (!Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo6, Mathf.Infinity, 1 << LayerMask.NameToLayer("DesignObject"))) {
-                                SetSelectableToNull();
-                            }
-                        }
-                        else {
-                            HitRotateCirlce = false;
-                        }
-                    }
-                }
-            }
-
-            float timeDelta = Time.time - lastClickTime;
-
-            //if(timeDelta < doubleClickTime)
-            //{
-            PointerEventData pointer = new PointerEventData(EventSystem.current);
-            pointer.position = Input.mousePosition;
-            List<RaycastResult> raycastResults = new List<RaycastResult>();
-            EventSystem.current.RaycastAll(pointer, raycastResults);
-
-            //Debug.Log("Double click");
-            //if (raycastResults.Count > 0)
-            //{
-            //	if (raycastResults [0].gameObject.layer == LayerMask.NameToLayer ("MoveableUI"))
-            //	{
-            //		IUISelectable selectable = raycastResults [0].gameObject.GetComponent<IUISelectable> ();
-
-            //		if (selectable == null)
-            //		{
-            //			selectable = raycastResults [0].gameObject.transform.parent.GetComponent<IUISelectable> ();
-            //			currentObject = raycastResults [0].gameObject.transform.parent;
-            //		}
-            //		else
-            //		{
-            //			currentObject = raycastResults [0].gameObject.transform;
-            //		}
-
-            //		selectable.Select(true);
-            //		MoveableUISelected = true;
-            //	}
-            //}
-            //else
-            {
-                Debug.Log("Single click");
-                RaycastHit hitInfo;
-
-                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo, Mathf.Infinity, 1 << LayerMask.NameToLayer("DesignObject"))) {
-                    currentObject = hitInfo.transform;
-                    SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);
-                }
-            }
-
-            lastClickTime = 0f;
-
-        }
-        else {
-            lastClickTime = Time.time;
-        }
-        //}
-
-        if (lastClickTime > 0f && Time.time - lastClickTime > doubleClickTime) {
-            if (EventSystem.current.IsPointerOverGameObject()) return;
-
-            lastClickTime = 0f;
-        }
-
-        if (Input.GetMouseButton(0) && !hasHitUI) {
-            //Debug.Log("Hit object");
-            if (MoveableUISelected && currentObject) {
-                Debug.Log("move");
-                //currentObject.position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                //RaycastHit hit;
-                //if (Physics.Raycast(ray, out hit, Mathf.Infinity)) {
-                //    currentObject.position = hit.point;
-                //}
-
-                isObjSelected = true;
-
-                RaycastHit hitInfo3;
-                Ray ray = PlayerCamera.ScreenPointToRay(Input.mousePosition);
-
-                if (Physics.Raycast(ray, out hitInfo3, Mathf.Infinity, 1 << LayerMask.NameToLayer("DesignObject"))) {
-                    currentObject.position = new Vector3(Mathf.Round(Mathf.Clamp(hitInfo3.point.x, -(GridManager.Instance.gridSizeX / 2f), (GridManager.Instance.gridSizeX / 2f) - 1f)) + .5f, 0f, Mathf.Round(Mathf.Clamp(hitInfo3.point.z, -(GridManager.Instance.gridSizeZ / 2f), (GridManager.Instance.gridSizeZ / 2f) - 1f)) + .5f);
-                }
-            }
-            else if (!EventSystem.current.IsPointerOverGameObject()) {
-                if (HitRotateCirlce) {
-                    RaycastHit hitInfo5;
-                    if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo5, Mathf.Infinity, 1 << LayerMask.NameToLayer("GridCollider"))) {
-                        float angle = SignedAngleBetween(RotateCircleHitPreviousPoint - currentObject.position, hitInfo5.point - currentObject.position, Vector3.up);
-                        RotateCirclesRenderer.Instance.SetDegrees(-angle);
-                        RotateCircleHitPreviousPoint = hitInfo5.point;
-                    }
-                }
-                // need to select the object that we are hovering over first
-                else if (currentObject) {
-                    Debug.Log("Current");
-                    RaycastHit hitInfo3;
-                    Ray ray = PlayerCamera.ScreenPointToRay(Input.mousePosition);
-
-                    if (Physics.Raycast(ray, out hitInfo3, Mathf.Infinity, 1 << LayerMask.NameToLayer("GridCollider"))) {
-                        currentObject.position = new Vector3(Mathf.Round(Mathf.Clamp(hitInfo3.point.x, -(GridManager.Instance.gridSizeX / 2f), (GridManager.Instance.gridSizeX / 2f) - 1f)) + .5f, 0f, Mathf.Round(Mathf.Clamp(hitInfo3.point.z, -(GridManager.Instance.gridSizeZ / 2f), (GridManager.Instance.gridSizeZ / 2f) - 1f)) + .5f);
-                    }
-                }
-            }
-
-        }
-
-        if (Input.GetMouseButtonUp(0)) {
-            if (HitRotateCirlce)
-                HitRotateCirlce = false;
-        }*/
     }
 
-
-    float SignedAngleBetween(Vector3 a, Vector3 b, Vector3 n) {
-        float angle = Vector3.Angle(a, b);
-        float sign = Mathf.Sign(Vector3.Dot(n, Vector3.Cross(a, b)));
-
-        float signed_angle = angle * sign;
-
-        return signed_angle;
-    }
-
-    public void SetObject(DesignInfo objectInfo) {
-        /*Debug.Log("Made Object");
-		GameObject newObject = Instantiate(Resources.Load ("ModelPrefabs/" + objectName)) as GameObject;
-		newObject.transform.position = Vector3.zero;
-		currentObject = newObject.transform;
-
-		SelectedObjectCircleRenderer.Instance.SetSelectedObject (currentObject);*/
-
-        /*AssetBundleRequest request = DataManager.modelBundle.LoadAssetAsync(objectName, typeof(GameObject));
-        yield return request;
-        GameObject newObject = (GameObject)request.asset;
-        newObject.transform.position = Vector3.zero;
-        currentObject = newObject.transform;
-
-        SelectedObjectCircleRenderer.Instance.SetSelectedObject(currentObject);*/
+    /// <summary>
+    /// Spawn the specified model and select it
+    /// </summary>
+    /// <param name="objectInfo">The info of the model to be spawned</param>
+    public void SpawnModel(DesignInfo objectInfo) {
         SetSelectableToNull();
         isObjSelected = true;
-        //moveMode = true;
-
         StartCoroutine(LoadObject(objectInfo));
     }
 
+    /// <summary>
+    /// Looks up a model and loads it from the assetbundle and spawns it
+    /// </summary>
+    /// <param name="objectInfo">The info of the model to be spawned</param>
+    /// <returns></returns>
     IEnumerator LoadObject(DesignInfo objectInfo) {
-        //yield return new WaitUntil(() => DataManager.modelBundles.Count == DataManager.names.Length);
         // Load and retrieve the AssetBundle
         AssetBundle[] bundles = DataManager.modelBundles.ToArray();
         AssetBundle bundle = new AssetBundle();
@@ -478,20 +232,10 @@ public class PlayerManager : MonoBehaviour {
         GameObject newObject = Instantiate(request.asset) as GameObject;
         newObject.transform.position = new Vector3(0, -100, 0);
         newObject.AddComponent<BoxCollider>();
-        //newObject.GetComponent<BoxCollider>().center = Vector3.zero;
-        //newObject.GetComponent<BoxCollider>().size = new Vector3(10, 10, 10);
-        CalculateLocalBounds(newObject);
         newObject.GetComponent<BoxCollider>().isTrigger = true;
+        CalculateLocalBounds(newObject);
         newObject.AddComponent<ObjectInfo>();
         newObject.GetComponent<ObjectInfo>().info = objectInfo;
-        //newObject.AddComponent<EventTrigger>();
-        /*EventTrigger.Entry entry = new EventTrigger.Entry();
-        entry.eventID = EventTriggerType.PointerEnter;
-        entry.callback.AddListener((eventData) => ToolTip.GetComponent<TooltipController>().SetTooltipText("Double click a design to Move / Rotate"));
-        entry.callback.AddListener((eventData) => ToolTip.transform.GetChild(0).gameObject.SetActive(true));
-        EventTrigger.Entry exit = new EventTrigger.Entry();
-        exit.eventID = EventTriggerType.PointerExit;
-        exit.callback.AddListener((eventData) => ToolTip.transform.GetChild(0).gameObject.SetActive(false));*/
         newObject.layer = LayerMask.NameToLayer("DesignObject");
         newObject.tag = "Models";
         currentObject = newObject.transform;
@@ -500,6 +244,10 @@ public class PlayerManager : MonoBehaviour {
         ObjectWorldPanel.Instance.SetTarget(currentObject);
     }
 
+    /// <summary>
+    /// Adjust the size of the box collider so that it fits the model
+    /// </summary>
+    /// <param name="newObject">The model</param>
     private static void CalculateLocalBounds(GameObject newObject) {
         Quaternion currentRotation = newObject.transform.rotation;
         newObject.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
@@ -520,6 +268,14 @@ public class PlayerManager : MonoBehaviour {
         newObject.transform.rotation = currentRotation;
     }
 
+    /// <summary>
+    /// Looks up a model and loads it from the assetbundle and spawns it at a position with a rotation and a scale
+    /// </summary>
+    /// <param name="infoList">List of all model infos</param>
+    /// <param name="objectName">Name  of model to be spawned</param>
+    /// <param name="position">Position of model to be spawned</param>
+    /// <param name="rotation">Rotation of model to be spawned</param>
+    /// <param name="scale">Scale of model to be spawned</param>
     public static IEnumerator LoadObjectAtPositionAndRotation(List<DesignInfo> infoList, string objectName, Vector3 position, Quaternion rotation, Vector3 scale) {
         // Load and retrieve the AssetBundle
         AssetBundle[] bundles = DataManager.modelBundles.ToArray();
@@ -541,24 +297,16 @@ public class PlayerManager : MonoBehaviour {
         GameObject newObject = Instantiate(request.asset) as GameObject;
         newObject.transform.position = position;
         newObject.transform.rotation = rotation;
-        
-        /*newObject.AddComponent<BoxCollider>();
-        newObject.GetComponent<BoxCollider>().center = Vector3.zero;
-        newObject.GetComponent<BoxCollider>().size = new Vector3(10, 10, 10);
-        newObject.GetComponent<BoxCollider>().isTrigger = true;
-        newObject.AddComponent<SelectedObjectCollision>();
-        newObject.layer = LayerMask.NameToLayer("DesignObject");
-        newObject.tag = "Models";*/
 
         DesignInfo objectInfo = null;
 
         foreach(DesignInfo info in infoList) {
-            //Debug.Log(info.Name);
             if(info.Name.ToLower() == objectName.ToLower()) {
                 objectInfo = info;
             }
         }
-        //Debug.Log("Info " + objectInfo.MainCategory);
+
+        // Create the model in the world
         newObject.AddComponent<ObjectInfo>();
         newObject.GetComponent<ObjectInfo>().info = objectInfo;
         newObject.AddComponent<BoxCollider>();
@@ -580,17 +328,22 @@ public class PlayerManager : MonoBehaviour {
         Texture2D texture = new Texture2D(1,1);
         texture = image;
         photoObject.GetComponent<SpriteRenderer>().sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0f));
-        //photoObject.GetComponent<SpriteRenderer>().sortingOrder = 10;
         photoObject.GetComponent<BoxCollider>().center = photoObject.GetComponent<SpriteRenderer>().sprite.bounds.center;
         photoObject.GetComponent<BoxCollider>().size = photoObject.GetComponent<SpriteRenderer>().sprite.bounds.size;
         PlayerManager.Instance.SelectObject(photoObject);
     }
 
+    /// <summary>
+    /// Deletes the currently selected object
+    /// </summary>
     public void DeleteCurrentObject() {
         Destroy(currentObject.gameObject);
         ObjectWorldPanel.Instance.SetTarget(null);
     }
 
+    /// <summary>
+    /// Deselects the current object
+    /// </summary>
     public void SetSelectableToNull() {
         isObjSelected = false;
         moveMode = false;
@@ -608,45 +361,45 @@ public class PlayerManager : MonoBehaviour {
         SelectObject(null);
     }
 
-
+    /// <summary>
+    /// Handles camera rotation
+    /// </summary>
     void Rotating() {
-
-
         if (Input.GetMouseButtonDown(0)) {
-
             lastMousePos = Input.mousePosition;
-            //Debug.Log("Pressed " + lastMousePos.x);
         }
 
         if (Input.GetMouseButton(0)) {
             currentMousePos = Input.mousePosition;
-            //Debug.Log("Current " + currentMousePos.x);
+            // Get the difference between the position the mouse was in when it was click and where it is now
             deltaX = lastMousePos.x - currentMousePos.x;
             deltaY = lastMousePos.y - currentMousePos.y;
-
             // Left to Right
             if (lastMousePos.x != currentMousePos.x) {
-                //Debug.Log("DeltaX: " + deltaX);
                 cameraAnchor.transform.eulerAngles = new Vector3(cameraAnchor.transform.eulerAngles.x, cameraAnchor.transform.eulerAngles.y - deltaX * 0.5f, 0);
             }
-
             // Top to Bottom
             if (lastMousePos.y != currentMousePos.y && cameraAnchor.transform.eulerAngles.x + deltaY * 0.5f < 90 && cameraAnchor.transform.eulerAngles.x + deltaY * 0.5f > 5) {
-                //cameraAnchor.Rotate(Vector3.right, deltaY * 0.5f);
                 cameraAnchor.transform.eulerAngles = new Vector3(cameraAnchor.transform.eulerAngles.x + deltaY * 0.5f, cameraAnchor.transform.eulerAngles.y, 0);
             }
-
-            //cameraAnchor.eulerAngles = new Vector3(cameraAnchor.eulerAngles.x, cameraAnchor.eulerAngles.y, 0);
             lastMousePos = currentMousePos;
         }
     }
 
+    /// <summary>
+    /// Change the scale of the current object
+    /// </summary>
+    /// <param name="percent">Value between 0 and 2 where 1 is the default scale</param>
     public void ScaleCurrentObject(float percent) {
         currentObject.transform.localScale = new Vector3(percent, percent, percent);
         Vector3 scale = currentObject.GetComponent<BoxCollider>().size;
         SelectorIndicator.Instance.selector.transform.localScale = new Vector3(scale.x * percent, 0.1f, scale.x * percent);
     }
 
+    /// <summary>
+    /// Select a specific model by name
+    /// </summary>
+    /// <param name="obj">Name of the model</param>
     public void SelectObject(GameObject obj) {
         isObjSelected = true;
         if (obj) {
@@ -655,6 +408,7 @@ public class PlayerManager : MonoBehaviour {
             SelectorIndicator.Instance.SetSelectedObject(currentObject.gameObject);
             ObjectWorldPanel.Instance.SetTarget(currentObject);
         }
+        // No model so select nothing
         else {
             currentObject = null;
             SelectorIndicator.Instance.SetSelectedObject(null);

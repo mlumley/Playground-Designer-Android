@@ -16,7 +16,6 @@ public class MakePrefabs : MonoBehaviour {
                 model.GetComponent<BoxCollider>().center = Vector3.zero;
                 model.GetComponent<BoxCollider>().size = new Vector3(10, 10, 10);
                 model.GetComponent<BoxCollider>().isTrigger = true;
-                model.AddComponent<SelectedObjectCollision>();
 #if UNITY_EDITOR
                 //UnityEditor is not available in the built version! http://answers.unity3d.com/answers/316837/view.html
                 UnityEditor.PrefabUtility.CreatePrefab("Assets/Resources/ModelPrefabs/" + fileInfo[i].Name.Replace(".skp", "") + ".prefab", model);

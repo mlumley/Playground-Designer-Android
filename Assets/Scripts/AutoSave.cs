@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
-using System.Collections;
-using UnityEngine.UI;
 using Assets.Scripts;
 
+/// <summary>
+/// Controls auto saving
+/// </summary>
 public class AutoSave : MonoBehaviour {
 
     public float interval;
@@ -19,10 +20,12 @@ public class AutoSave : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        // Make sure to only start auto saving when the info screen has be dismissed
         if (infoScreenOff || !infoScreen.activeSelf) {
             infoScreenOff = true;
             currentTime -= Time.deltaTime;
 
+            // When the timer reaches zero save and reset
             if (currentTime < 0) {
                 Debug.Log("AutoSaving");
                 saveManager.GetComponent<SaveManager>().SavePlayground();

@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 using System.Collections.Generic;
-using SimpleJSON;
-using Assets.Scripts.Classes;
 
 
 namespace Assets.Scripts {
@@ -14,9 +11,12 @@ namespace Assets.Scripts {
         public InputField width;
         public InputField length;
 
+        /// <summary>
+        /// Save the current playground and upload it to the server
+        /// </summary>
+        /// <param name="withAnimation">Play the animation on saveText</param>
         public void SavePlayground(bool withAnimation = true) {
             SaveFile save = MakeSaveFile();
-            //string saveJSON = JsonUtility.ToJson(save);
             //Debug.Log(saveJSON);
             StartCoroutine(DataManager.Instance.SavePlayground(fileName.text, save));
             if (withAnimation) {
@@ -25,6 +25,10 @@ namespace Assets.Scripts {
             }
         }
 
+        /// <summary>
+        /// Creates a JSON object to be uploaded to the server
+        /// </summary>
+        /// <returns>SaveFile object which can be encoded into JSON</returns>
         public SaveFile MakeSaveFile() {
 
             GameObject[] models = GameObject.FindGameObjectsWithTag("Models");

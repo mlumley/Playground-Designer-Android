@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
-using System.Collections;
 
+/// <summary>
+/// Controls whether the panels are hidden or not
+/// </summary>
 public class ModelPanelController : MonoBehaviour {
 
     private Animation ani;
@@ -18,6 +20,9 @@ public class ModelPanelController : MonoBehaviour {
         ani = GetComponent<Animation>();
     }
 
+    /// <summary>
+    /// Plays an animation to lower or raise the object panels
+    /// </summary>
     public void ShowHidePanel() {
         if (isHid) {
             ani["HideShowPanel"].speed = -1;
@@ -25,23 +30,28 @@ public class ModelPanelController : MonoBehaviour {
             ani["HideShowPanel"].time = 0.5f;
             ani.Play("HideShowPanel");
             isHid = false;
-            showHideButton.GetComponent<ShowHidePanelsController>().ChangeSprite(1);
+            showHideButton.GetComponent<SpriteSwapManager>().ChangeSprite(1);
         }
         else {
             ani["HideShowPanel"].speed = 1;
             ani["HideShowPanel"].time = 0;
             ani.Play("HideShowPanel");
             isHid = true;
-            showHideButton.GetComponent<ShowHidePanelsController>().ChangeSprite(2);
+            showHideButton.GetComponent<SpriteSwapManager>().ChangeSprite(2);
         }
     }
+
+    /// <summary>
+    /// Plays an animation to lower or raise the object panels
+    /// </summary>
+    /// <param name="position">1 to hide, 2 to raise</param>
     public void ShowHidePanel(int position) {
         if (position == 1) {
             ani["HideShowPanel"].speed = 1;
             ani["HideShowPanel"].time = 0;
             ani.Play("HideShowPanel");
             isHid = true;
-            showHideButton.GetComponent<ShowHidePanelsController>().ChangeSprite(2);
+            showHideButton.GetComponent<SpriteSwapManager>().ChangeSprite(2);
         }
         else {
             ani["HideShowPanel"].speed = -1;
@@ -49,7 +59,7 @@ public class ModelPanelController : MonoBehaviour {
             ani["HideShowPanel"].time = 0.5f;
             ani.Play("HideShowPanel");
             isHid = false;
-            showHideButton.GetComponent<ShowHidePanelsController>().ChangeSprite(1);
+            showHideButton.GetComponent<SpriteSwapManager>().ChangeSprite(1);
         }
     }
 }

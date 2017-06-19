@@ -4,7 +4,10 @@ using System.Runtime.InteropServices;
 using System.IO;
 using System;
 
-public class UploadImage : MonoBehaviour {
+/// <summary>
+/// Handles uploading and downloading of images to and from the server
+/// </summary>
+public class ImageManager : MonoBehaviour {
 
     [DllImport("__Internal")]
     private static extern void ImageUploaderCaptureClick();
@@ -14,6 +17,10 @@ public class UploadImage : MonoBehaviour {
 
     byte[] bytes;
 
+    /// <summary>
+    /// Download a image from the URL and create a texture object
+    /// </summary>
+    /// <param name="url">URL to download the image from</param>
     IEnumerator LoadTexture(string url) {
         WWW image = new WWW(url);
         yield return image;
@@ -22,48 +29,45 @@ public class UploadImage : MonoBehaviour {
         Debug.Log("Loaded image size: " + texture.width + "x" + texture.height);
         CreatePhoto(texture);
     }
-
-    void FileSelected(string url) {
-        StartCoroutine(LoadTexture(url));
-    }
-
+    
+    /// <summary>
+    /// Open the file select dialogue to up load a photo
+    /// </summary>
     public void OnButtonPointerDown() {
 #if UNITY_EDITOR
         string path = UnityEditor.EditorUtility.OpenFilePanel("Open image", "", "jpg,png,bmp");
         if (!System.String.IsNullOrEmpty(path))
-            FileSelected("file:///" + path);
+            StartCoroutine(LoadTexture("file:///" + path));
 #elif UNITY_WEBGL
-
         ImageUploaderCaptureClick();
 #endif
     }
 
+    /// <summary>
+    /// Converts the texture object to a photoObject which can be place in the world and then selects the object
+    /// </summary>
+    /// <param name="texture">The texture with the image applied</param>
     void CreatePhoto(Texture2D texture) {
-        //GameObject PhotoWorldPanelPrefab = Instantiate(Resources.Load("UIPrefabs/WorldPhotoPanel")) as GameObject;
-        //PhotoWorldPanelPrefab.transform.SetParent(MainCanvas.transform);
-        //PhotoWorldPanelPrefab.transform.SetAsFirstSibling();
-        //PhotoWorldPanelPrefab.transform.localPosition = Vector3.zero;
-        //PhotoWorldPanelPrefab.GetComponent<RectTransform>().sizeDelta = new Vector2(200,100);
-        //WorldPhotoPanel worldPhotoPanel = PhotoWorldPanelPrefab.GetComponent<WorldPhotoPanel>();
-        //worldPhotoPanel.SetImage(texture);
-        //worldPhotoPanel.Select(true);
         GameObject photoObject = Instantiate(Resources.Load("UIPrefabs/PhotoWorldObject")) as GameObject;
         photoObject.name = "PhotoObject" + Guid.NewGuid().ToString();
         photoObject.transform.position = Vector3.zero;
         photoObject.GetComponent<SpriteRenderer>().sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0f));
-        //photoObject.GetComponent<SpriteRenderer>().sortingOrder = 10;
         photoObject.GetComponent<BoxCollider>().center = photoObject.GetComponent<SpriteRenderer>().sprite.bounds.center;
         photoObject.GetComponent<BoxCollider>().size = photoObject.GetComponent<SpriteRenderer>().sprite.bounds.size;
         PlayerManager.Instance.SelectObject(photoObject);
     }
 
-
+    /// <summary>
+    /// Downloads a screenshot and saves it in the downloads folder if done through
+    /// the browser
+    /// </summary>
     public void DownloadImage() {
         StartCoroutine(TakeImage());
-
-
     }
 
+    /// <summary>
+    /// Takes the screenshot
+    /// </summary>
     IEnumerator TakeImage() {
         yield return null;
 #if UNITY_EDITOR
@@ -84,12 +88,10 @@ public class UploadImage : MonoBehaviour {
         Destroy(tex);
         string bytestring = Convert.ToBase64String(bytes);
 
-
         GameObject.Find("Canvas").GetComponent<Canvas>().enabled = true;
 #if UNITY_EDITOR
         File.WriteAllBytes(Application.dataPath + "/SavedScreen.png", bytes);
 #elif UNITY_WEBGL
-
         ImageDownloaderCaptureClick("SavedScreen", bytestring);
 #endif
     }

@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
-using System.Collections;
 
+/// <summary>
+/// Handles the position and visability of the selector
+/// </summary>
 public class SelectorIndicator : MonoBehaviour {
 
     protected static SelectorIndicator _instance;
@@ -29,41 +31,45 @@ public class SelectorIndicator : MonoBehaviour {
     void Update() {
         if (selectedObject) {
             selector.transform.position = selectedObject.transform.position;
+            // Set the selector's size to be as big as the longest axis of the object
             float diameter = selectedObject.GetComponent<BoxCollider>().size.x > selectedObject.GetComponent<BoxCollider>().size.z ? selectedObject.GetComponent<BoxCollider>().size.x : selectedObject.GetComponent<BoxCollider>().size.z;
             diameter += 1;
             selector.transform.localScale = new Vector3(diameter * selectedObject.transform.localScale.x, 1, diameter * selectedObject.transform.localScale.z);
         }
     }
 
+    /// <summary>
+    /// Move the selector to the selected model
+    /// </summary>
+    /// <param name="selectedObject">Model to select</param>
     public void SetSelectedObject(GameObject selectedObject) {
         if (selectedObject) {
             this.selectedObject = selectedObject;
+            // Set the selector's size to be as big as the longest axis of the object
             float diameter = selectedObject.GetComponent<BoxCollider>().size.x > selectedObject.GetComponent<BoxCollider>().size.z ? selectedObject.GetComponent<BoxCollider>().size.x : selectedObject.GetComponent<BoxCollider>().size.z;
             diameter += 1;
             selector.transform.localScale = new Vector3(diameter * selectedObject.transform.localScale.x, 1, diameter * selectedObject.transform.localScale.z);
             selector.transform.position = selectedObject.transform.position;
             selector.transform.rotation = selectedObject.transform.rotation;
-
-            /*foreach(Transform sphere in selector.transform.GetComponentsInChildren<Transform>()) {
-                if (sphere.GetComponent<SphereCollider>()) {
-                    sphere.localScale = new Vector3(0.3f, diameter * 0.3f, 0.3f); ;
-                }
-            }*/
         }
         else {
             selector.SetActive(false);
         }
     }
 
+    /// <summary>
+    /// Rotate the selected object to face the mouse position
+    /// </summary>
+    /// <param name="mousePos">The current mouse position</param>
+    /// <param name="rotationSphere">The rotation object that was clicked</param>
     public void RotateSelectedObject(Vector3 mousePos, GameObject rotationSphere) {
-        //selectedObject.transform.RotateAround(selectedObject.transform.position, Vector3.up, -degrees);
-        //selector.transform.RotateAround(selector.transform.position, Vector3.up, -degrees);
 
         selectedObject.transform.LookAt(mousePos);
         selector.transform.LookAt(mousePos);
 
         //Debug.Log("Look at " + selector.transform.eulerAngles);
 
+        // Offset the angle to rotate to based on which rotation object was selected
         float offset;
         if (rotationSphere.name == "Forward") {
             offset = 0;

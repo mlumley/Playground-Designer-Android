@@ -3,20 +3,28 @@ using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
+/// <summary>
+/// Controls what dropdown menus display
+/// </summary>
 public class DropdownSorter : MonoBehaviour {
 
     public Dropdown dropdownMenu;
-    private List<string> categories;
     public GameObject panels;
 
+    /// <summary>
+    /// Set the list of categories for a dropdown menu
+    /// </summary>
+    /// <param name="categories">Categories to be set</param>
     public void setCatagories(List<string> categories) {
-        this.categories = categories;
         categories.Sort();
         dropdownMenu.AddOptions(categories);
         updateObjectDropdown();
         updateLandscapeDropdown();
     }
 
+    /// <summary>
+    /// Update the currently selected category and display that categories models
+    /// </summary>
 	public void updateObjectDropdown () {
         int index = dropdownMenu.value;
         Dropdown.OptionData item = dropdownMenu.options[index];
@@ -25,6 +33,9 @@ public class DropdownSorter : MonoBehaviour {
             panels.GetComponent<ModelPanelController>().ShowHidePanel(0);
     }
 
+    /// <summary>
+    /// Update the currently selected category and display that categories models
+    /// </summary>
     public void updateLandscapeDropdown() {
         int index = dropdownMenu.value;
         Dropdown.OptionData item = dropdownMenu.options[index];
