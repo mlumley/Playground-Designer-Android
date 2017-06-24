@@ -485,7 +485,7 @@ public class DataManager : MonoBehaviour {
             yield return null;
         //Debug.Log("Started downloading " + bundleName);
         // Increment version number with new assest bundles
-        var www = WWW.LoadFromCacheOrDownload(BaseUrlOfDesigner + "AssetBundles/" + bundleName, 10);
+        var www = WWW.LoadFromCacheOrDownload(BaseUrlOfDesigner + "AssetBundles/Android/" + bundleName, 10);
         yield return www;
         if (!string.IsNullOrEmpty(www.error)) {
             Debug.Log(www.error);
